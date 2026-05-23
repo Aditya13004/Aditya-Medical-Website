@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Orders | Aditya Medical & General Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #1e40af;
+      --bg: #f1f5f9;
+      --white: #ffffff;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Inter', -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Tracking Progress ── */
+    .tracking-steps {
+      display: flex;
+      justify-content: space-between;
+      margin: 2rem 0;
+      position: relative;
+      padding: 0 10px;
+    }
+
+    .tracking-steps::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      flex: 1;
+    }
+
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border: 3px solid #e2e8f0;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .step.active .step-dot {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #15803d;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .step.current .step-dot {
+      border-color: #2563eb;
+      background: #dbeafe;
+      color: #1d4ed8;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .step.active .step-label, 
+    .step.current .step-label {
+      color: #1e293b;
+    }
+
+    .dashboard-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .dashboard-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .order-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.2s;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .order-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .order-number {
+      font-weight: 800;
+      color: #1e293b;
+      font-size: 1.1rem;
+    }
+
+    .order-time {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-accepted { background: #dcfce7; color: #15803d; }
+    .badge-delivered { background: #e0e7ff; color: #3730a3; }
+
+    .medicines-list {
+      background: #f8fafc;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      border: 1px solid #f1f5f9;
+    }
+
+    .med-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .med-content {
+      color: #1e293b;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      background: #fff;
+      border-radius: 24px;
+      border: 2px dashed #cbd5e1;
+    }
+
+    .empty-state .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    .empty-state h2 { font-size: 1.5rem; color: #1e293b; margin-bottom: 1rem; }
+    .empty-state p { color: #64748b; margin-bottom: 2rem; }
+
+    .btn-primary {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .hdr-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Mobile fixes */
+    @media (max-width: 768px) {
+      .hdr-inner { padding: 0.8rem 1rem; }
+      .hdr-logo-name { font-size: 1rem; }
+      .hdr-nav { display: none; }
+      .hdr-hamburger { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>My Orders</h1>
+      <p style="color:#64748b" id="userGreet">Loading your personal order history...</p>
+    </div>
+
+    <div id="ordersList">
+       <div style="text-align:center; padding: 40px; color: #64748b;">
+         <p>🔍 Syncing with database...</p>
+       </div>
+    </div>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    // ── Hamburger menu logic ──
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+
+    async function loadOrders() {
+      const container = document.getElementById('ordersList');
+      const greet = document.getElementById('userGreet');
+      
+      const email = localStorage.getItem('am_user_email');
+      const name = localStorage.getItem('am_user_name');
+      
+      // Update Header Profile
+      const profileEl = document.getElementById('userProfile');
+      if (name && profileEl) {
+        const firstChar = (name.charAt(0) || 'U').toUpperCase();
+        profileEl.innerHTML = `
+          <div class="user-welcome">
+            <div class="user-avatar">${firstChar}</div>
+            <span class="user-name-text">${name.split(' ')[0]}</span>
+          </div>
+        `;
+        profileEl.style.display = 'block';
+        
+        // Hide Login if logged in
+        document.querySelectorAll('a[href="login.html"]').forEach(l => {
+          l.textContent = '👤 Account';
+          l.classList.remove('hn-ghost');
+        });
+      }
+
+      if (!email) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🔒</div>
+            <h2>Login Required</h2>
+            <p>Please log in to your account to view your order history and track deliveries.</p>
+            <a href="login.html" class="btn-primary">Login Now</a>
+          </div>
+        `;
+        greet.textContent = "Please secure your session to track orders.";
+        return;
+      }
+
+      if (name) greet.innerHTML = `Hello, <strong>${name.split(' ')[0]}</strong>! Track your orders here.`;
+
+      try {
+        const sb = await getSupabase();
+
+        // Get the authenticated user's email from session or localStorage
+        let userEmail = email;
+        try {
+          const { data: { session } } = await sb.auth.getSession();
+          if (session?.user?.email) {
+            userEmail = session.user.email;
+          }
+        } catch(e) { /* fallback to localStorage email */ }
+
+        if (!userEmail) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="icon">🔒</div>
+              <h2>Login Required</h2>
+              <p>Please log in to view your order history.</p>
+              <a href="login.html" class="btn-primary">Login Now</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Query orders by email (matches how orders are submitted)
+        const { data: orders, error } = await sb
+          .from('orders')
+          .select('*')
+          .eq('email', userEmail)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!orders || orders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="icon">📦</div>
+              <h2>No Orders Found</h2>
+              <p>You haven't placed any orders yet. Once you order, they will appear here!</p>
+              <a href="order.html" class="btn-primary">Start Ordering</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = orders.map(order => {
+          const status = (order.status || 'pending').toLowerCase();
+          const orderId = order.id ? order.id.toString().slice(-4) : order.order_id || '—';
+          const createdAt = order.created_at ? new Date(order.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'N/A';
+          return `
+            <div class="order-card">
+              <div class="order-header">
+                <div class="order-meta">
+                  <span class="order-number">Order #${orderId}</span>
+                  <span class="order-time">${createdAt}</span>
+                </div>
+                <span class="status-badge badge-${status}">${status}</span>
+              </div>
+
+              <div class="tracking-steps">
+                <div class="step ${['pending', 'accepted', 'delivered'].includes(status) ? 'active' : ''} ${status === 'pending' ? 'current' : ''}">
+                  <div class="step-dot">1</div>
+                  <div class="step-label">Placed</div>
+                </div>
+                <div class="step ${['accepted', 'delivered'].includes(status) ? 'active' : ''} ${status === 'accepted' ? 'current' : ''}">
+                  <div class="step-dot">2</div>
+                  <div class="step-label">Accepted</div>
+                </div>
+                <div class="step ${['delivered'].includes(status) ? 'active' : ''} ${status === 'delivered' ? 'current' : ''}">
+                  <div class="step-dot">3</div>
+                  <div class="step-label">Delivered</div>
+                </div>
+              </div>
+
+              <div class="medicines-list">
+                <div class="med-label">Order Details</div>
+                <div class="med-content">${order.medicines || order.medicine || order.items || 'Prescription Medicines'}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Real-time updates
+        sb.channel('realtime-orders-' + userEmail)
+          .on('postgres_changes', { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'orders',
+            filter: `email=eq.${userEmail}`
+          }, () => {
+            loadOrders(); 
+          })
+          .subscribe();
+
+      } catch (err) {
+        console.error('Fetch error:', err);
+        const isNetworkError = err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('ERR_CONNECTION'));
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">${isNetworkError ? '📡' : '⚠️'}</div>
+            <h2>${isNetworkError ? 'Connection Error' : 'Something Went Wrong'}</h2>
+            <p>${isNetworkError 
+              ? 'Cannot connect to the server. This may be because the database is temporarily paused. Please try again in a moment or contact support.' 
+              : 'Could not load your orders. Please refresh the page and try again.'}
+            </p>
+            <a href="javascript:location.reload()" class="btn-primary">🔄 Retry</a>
+          </div>
+        `;
+      }
+    }
+
+    window.onload = loadOrders;
+  </script>
+</body>
+</html>

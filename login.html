@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Login – Aditya Medical & General Store</title>
+  <meta name="description" content="Login or register to Aditya Medical to place orders and track deliveries." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    /* ── Page styles ── */
+    body { background: linear-gradient(135deg,#eff6ff 0%,#dbeafe 50%,#e0f2fe 100%); min-height:100vh; }
+
+    .login-wrapper {
+      min-height: calc(100vh - 70px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem 6rem;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(37,99,235,.14);
+      width: 100%; max-width: 460px;
+      overflow: hidden;
+      border: 1px solid #dbeafe;
+    }
+
+    /* ── Tabs ── */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .auth-tab {
+      flex: 1; padding: 1rem;
+      background: none; border: none;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      color: #94a3b8; transition: all .25s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    .auth-tab.active { color: #2563eb; border-bottom-color: #2563eb; background: #f8fafc; }
+
+    /* ── Card body ── */
+    .auth-body { padding: 2.2rem 2rem 2rem; }
+    .auth-logo { text-align:center; margin-bottom:1.4rem; }
+    .auth-logo img { height:64px; border-radius:14px; box-shadow:0 4px 14px rgba(37,99,235,.2); }
+    .auth-title { font-size:1.5rem; font-weight:800; color:#1e293b; text-align:center; margin-bottom:.3rem; }
+    .auth-sub   { text-align:center; color:#64748b; font-size:.9rem; margin-bottom:1.8rem; }
+
+    /* ── Logged-in success card ── */
+    .success-header {
+      background: linear-gradient(135deg,#1d4ed8,#2563eb,#3b82f6);
+      padding: 2rem 2rem 1.5rem;
+      text-align: center;
+      border-radius: 0 0 0 0;
+    }
+    .success-avatar {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto .8rem;
+      border: 3px solid rgba(255,255,255,.4);
+    }
+    .success-header h2 { color:#fff; font-size:1.4rem; font-weight:800; margin-bottom:.2rem; }
+    .success-header p  { color:rgba(255,255,255,.8); font-size:.9rem; }
+    .success-badge {
+      display:inline-flex; align-items:center; gap:.35rem;
+      background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3);
+      color:#fff; padding:.3rem .9rem; border-radius:50px;
+      font-size:.78rem; font-weight:700; margin-top:.7rem;
+    }
+    .btn-logout {
+      display:block; width:calc(100% - 3rem); margin: 1rem 1.5rem 1.5rem;
+      padding:.75rem; background:#f1f5f9; color:#64748b;
+      border:1.5px solid #e2e8f0; border-radius:10px;
+      font-size:.88rem; font-weight:700; cursor:pointer; text-align:center;
+      transition:all .2s; text-decoration:none;
+    }
+    .btn-logout:hover { background:#fee2e2; color:#dc2626; border-color:#fecaca; }
+
+    /* ── Form elements ── */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label {
+      display:block; font-weight:600; color:#374151; font-size:.9rem; margin-bottom:.4rem;
+    }
+    .form-group input {
+      width:100%; padding:.85rem 1.1rem;
+      border:2px solid #e2e8f0; border-radius:12px;
+      font-size:.98rem; font-family:inherit; color:#1e293b;
+      background:#f8fafc; transition:all .25s;
+    }
+    .form-group input:focus {
+      outline:none; border-color:#2563eb;
+      box-shadow:0 0 0 4px rgba(37,99,235,.1); background:#fff;
+    }
+
+    /* Name field (register only) */
+    #nameGroup { display: none; }
+
+    /* phone / email label toggle */
+    .input-toggle-label {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .toggle-email-phone {
+      font-size: .78rem; font-weight: 600; color: #2563eb;
+      cursor: pointer; text-decoration: underline; background:none; border:none; padding:0;
+    }
+
+    /* ── Buttons ── */
+    .btn-auth {
+      width:100%; padding:1rem;
+      background:linear-gradient(135deg,#2563eb,#1d4ed8);
+      color:#fff; border:none; border-radius:12px;
+      font-size:1.05rem; font-weight:700; cursor:pointer;
+      transition:all .3s; box-shadow:0 4px 18px rgba(37,99,235,.35);
+      margin-top:.4rem;
+    }
+    .btn-auth:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,99,235,.45); }
+    .btn-auth:disabled { opacity:.65; transform:none; cursor:not-allowed; }
+
+    /* ── Divider ── */
+    .divider { display:flex; align-items:center; gap:1rem; margin:1.2rem 0; }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
+    .divider span { color:#94a3b8; font-size:.82rem; font-weight:600; white-space:nowrap; }
+
+    /* ── Guest option ── */
+    .guest-box {
+      background:#f0fdf4; border:1px dashed #86efac;
+      border-radius:12px; padding:1rem 1.2rem;
+      text-align:center;
+    }
+    .guest-box p { color:#15803d; font-size:.88rem; margin-bottom:.6rem; }
+    .btn-guest {
+      background:#22c55e; color:#fff; border:none;
+      padding:.65rem 1.6rem; border-radius:8px;
+      font-weight:700; font-size:.9rem; cursor:pointer;
+      transition:all .25s;
+    }
+    .btn-guest:hover { background:#16a34a; transform:translateY(-1px); }
+
+    /* ── Success state ── */
+    .auth-success { text-align:center; padding: 1rem 0; display:none; }
+    .auth-success .success-emoji { font-size:3.5rem; margin-bottom:1rem; }
+    .auth-success h3 { font-size:1.4rem; font-weight:800; color:#15803d; margin-bottom:.5rem; }
+    .auth-success p  { color:#64748b; margin-bottom:1.5rem; }
+    .success-nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+      margin-top: 1rem;
+    }
+    .success-nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: .3rem;
+      padding: .85rem .5rem; border-radius: 14px;
+      font-weight: 700; text-decoration: none; font-size: .85rem;
+      transition: all .25s; border: 2px solid transparent;
+    }
+    .success-nav-btn span.icon { font-size: 1.5rem; }
+    .snb-order  { background: linear-gradient(135deg,#22c55e,#16a34a); color:#fff; box-shadow:0 4px 16px rgba(34,197,94,.35); }
+    .snb-order:hover  { transform:translateY(-3px); box-shadow:0 8px 24px rgba(34,197,94,.5); color:#fff; }
+    .snb-products { background: linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; box-shadow:0 4px 16px rgba(37,99,235,.35); }
+    .snb-products:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(37,99,235,.5); color:#fff; }
+    .snb-prescription { background: linear-gradient(135deg,#f59e0b,#d97706); color:#fff; box-shadow:0 4px 16px rgba(245,158,11,.35); }
+    .snb-prescription:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(245,158,11,.5); color:#fff; }
+    .snb-home { background:#f8fafc; color:#1e293b; border-color:#e2e8f0; }
+    .snb-home:hover { background:#e2e8f0; transform:translateY(-3px); color:#1e293b; }
+    .btn-go-order {
+      display:inline-block; background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#fff; padding:.85rem 2rem; border-radius:12px;
+      font-weight:700; text-decoration:none; transition:all .25s;
+    }
+    .btn-go-order:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(34,197,94,.4); color:#fff; }
+
+    /* ── Error / info alerts ── */
+    .alert {
+      border-radius:10px; padding:.8rem 1rem;
+      font-size:.88rem; font-weight:600; margin-bottom:1rem;
+      display:none;
+    }
+    .alert.show { display:block; }
+    .alert-error { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; }
+    .alert-info  { background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; }
+
+    /* ── Toast ── */
+    #toast {
+      position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:#1e293b; color:#fff; padding:.9rem 2rem; border-radius:50px;
+      font-weight:600; font-size:.95rem; z-index:9999;
+      opacity:0; transition:all .4s; pointer-events:none; white-space:nowrap;
+      box-shadow:0 8px 32px rgba(0,0,0,.22);
+    }
+    #toast.show  { opacity:1; transform:translateX(-50%) translateY(0); }
+    #toast.ok    { background:linear-gradient(135deg,#22c55e,#16a34a); }
+    #toast.err   { background:linear-gradient(135deg,#ef4444,#dc2626); }
+
+    /* ── Forgot password link ── */
+    .forgot-link {
+      display:block; text-align:right; font-size:.82rem;
+      color:#2563eb; font-weight:600; margin-top:-.5rem; margin-bottom:.9rem;
+      cursor:pointer; background:none; border:none; text-decoration:underline;
+    }
+    .hdr-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 1px solid rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <!-- ══ LOGIN CARD ══ -->
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔐 Login</button>
+        <button class="auth-tab"        id="tabReg"   onclick="switchTab('register')">📝 Register</button>
+      </div>
+
+      <!-- Body -->
+      <div class="auth-body">
+        <div class="auth-logo">
+          <img src="images/Aditya Medical.png" alt="Logo" />
+        </div>
+        <h1 class="auth-title" id="authTitle">Welcome Back</h1>
+        <p class="auth-sub" id="authSub">Login to track your orders &amp; place new ones</p>
+
+        <!-- Alert box -->
+        <div class="alert alert-error" id="alertBox"></div>
+
+        <!-- Form -->
+        <form id="authForm" novalidate>
+
+          <!-- Name (register only) -->
+          <div class="form-group" id="nameGroup">
+            <label for="inp-name">Full Name</label>
+            <input type="text" id="inp-name" placeholder="e.g. Rajesh Sharma" />
+          </div>
+
+          <!-- Email / Phone -->
+          <div class="form-group">
+            <div class="input-toggle-label">
+              <label for="inp-email" id="emailLabel">Email Address</label>
+              <button type="button" class="toggle-email-phone" id="toggleInputBtn" onclick="toggleInputMode()">Use phone instead</button>
+            </div>
+            <input type="email" id="inp-email" placeholder="yourname@email.com" autocomplete="email" />
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="inp-pass">Password</label>
+            <input type="password" id="inp-pass" placeholder="Minimum 6 characters" autocomplete="current-password" />
+          </div>
+
+          <!-- Forgot password (login tab only) -->
+          <button type="button" class="forgot-link" id="forgotBtn" onclick="forgotPassword()">Forgot password?</button>
+
+          <button type="submit" class="btn-auth" id="authBtn">🔐 Login</button>
+        </form>
+
+        <!-- Success state -->
+        <div class="auth-success" id="successBox">
+          <!-- Gradient header -->
+          <div class="success-header">
+            <div class="success-avatar">👤</div>
+            <h2 id="successUserName">Welcome!</h2>
+            <p>You're now logged in to Aditya Medical</p>
+            <div class="success-badge">
+              <span id="successBadgeText">✅ Logged In</span>
+            </div>
+          </div>
+
+          <!-- Navigation grid -->
+          <div class="success-nav-grid" style="padding:1.4rem 1.4rem .5rem;">
+            <a href="order.html" class="success-nav-btn snb-order">
+              <span class="icon">🛒</span> Place Order
+            </a>
+            <a href="products.html" class="success-nav-btn snb-products">
+              <span class="icon">💊</span> Products
+            </a>
+            <a href="prescription-upload.html" class="success-nav-btn snb-prescription">
+              <span class="icon">📋</span> Prescription
+            </a>
+            <a href="ai-recommendations.html" class="success-nav-btn snb-home" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(124,58,237,.35);">
+              <span class="icon">🤖</span> AI Help
+            </a>
+          </div>
+
+          <!-- Logout -->
+          <button class="btn-logout" onclick="doLogout()">🚪 Logout</button>
+        </div>
+
+        <!-- Divider + Guest -->
+        <div class="divider" id="guestDivider"><span>or continue as guest</span></div>
+        <div class="guest-box" id="guestBox">
+          <p>No account? You can still place orders without logging in.</p>
+          <button class="btn-guest" onclick="window.location.href='order.html'">📦 Order as Guest</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- Sticky mobile bar -->
+  <div class="sticky-bar">
+    <div class="sticky-bar-inner">
+      <a href="order.html" class="sb-order">🛒 Order</a>
+      <a href="tel:+917588662926" class="sb-call">📞 Call</a>
+      <a href="https://wa.me/917588662926" target="_blank" class="sb-wa">💬 WhatsApp</a>
+    </div>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    // ── Hamburger ──
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      hamburgerBtn.classList.remove('open');
+      mobileDrawer.classList.remove('open');
+    }));
+    window.addEventListener('scroll', () => {
+      document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Tab switching ──
+    let currentTab = 'login'; // 'login' | 'register'
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tab === 'login' ? 'tabLogin' : 'tabReg').classList.add('active');
+
+      document.getElementById('nameGroup').style.display    = tab === 'register' ? 'block' : 'none';
+      document.getElementById('forgotBtn').style.display    = tab === 'login'    ? 'block' : 'none';
+      document.getElementById('authTitle').textContent      = tab === 'login' ? 'Welcome Back 👋' : 'Create Account 🎉';
+      document.getElementById('authSub').textContent        = tab === 'login'
+        ? 'Login to place orders & track deliveries'
+        : 'Register once, order medicines anytime';
+      document.getElementById('authBtn').textContent        = tab === 'login' ? '🔐 Login' : '✅ Create Account';
+      document.getElementById('inp-pass').placeholder       = tab === 'login' ? 'Your password' : 'Choose a password (min 6 chars)';
+      hideAlert();
+      resetSuccess();
+    }
+
+    // ── Input mode: email ↔ phone ──
+    let usePhone = false;
+    function toggleInputMode() {
+      usePhone = !usePhone;
+      const inp = document.getElementById('inp-email');
+      const lbl = document.getElementById('emailLabel');
+      const btn = document.getElementById('toggleInputBtn');
+      if (usePhone) {
+        inp.type        = 'tel';
+        inp.placeholder = '10-digit mobile number';
+        inp.autocomplete= 'tel';
+        lbl.textContent = 'Mobile Number';
+        btn.textContent = 'Use email instead';
+      } else {
+        inp.type        = 'email';
+        inp.placeholder = 'yourname@email.com';
+        inp.autocomplete= 'email';
+        lbl.textContent = 'Email Address';
+        btn.textContent = 'Use phone instead';
+      }
+      inp.value = '';
+    }
+
+    // ── Alert helpers ──
+    function showAlert(msg) {
+      const el = document.getElementById('alertBox');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    function hideAlert() { document.getElementById('alertBox').classList.remove('show'); }
+
+    function showToast(msg, type = 'ok') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show ' + type;
+      setTimeout(() => { t.className = ''; }, 3500);
+    }
+
+    function showSuccess(name, isRegister) {
+      // Hide ALL login-form elements
+      document.querySelector('.auth-tabs').style.display    = 'none';
+      document.querySelector('.auth-logo').style.display    = 'none';
+      document.getElementById('authTitle').style.display    = 'none';
+      document.getElementById('authSub').style.display      = 'none';
+      document.getElementById('alertBox').style.display     = 'none';
+      document.getElementById('authForm').style.display     = 'none';
+      document.getElementById('guestDivider').style.display = 'none';
+      document.getElementById('guestBox').style.display     = 'none';
+      // Flush auth-body padding so the gradient header bleeds to edges
+      document.querySelector('.auth-body').style.padding    = '0';
+      // Populate & show success
+      const displayName = name || localStorage.getItem('am_user_name') || 'Customer';
+      document.getElementById('successUserName').textContent = displayName;
+      document.getElementById('successBadgeText').textContent = isRegister ? '✨ Account Created!' : '✅ Logged In';
+      document.getElementById('successBox').style.display   = 'block';
+    }
+    function resetSuccess() {
+      document.querySelector('.auth-tabs').style.display    = '';
+      document.querySelector('.auth-logo').style.display    = '';
+      document.getElementById('authTitle').style.display    = '';
+      document.getElementById('authSub').style.display      = '';
+      document.getElementById('alertBox').style.display     = '';
+      document.getElementById('authForm').style.display     = '';
+      document.getElementById('guestDivider').style.display = '';
+      document.getElementById('guestBox').style.display     = '';
+      document.querySelector('.auth-body').style.padding    = '';
+      document.getElementById('successBox').style.display   = 'none';
+    }
+    async function doLogout() {
+      try {
+        const sb = await getSupabase();
+        await sb.auth.signOut();
+      } catch(e) {}
+      localStorage.removeItem('am_user_email');
+      localStorage.removeItem('am_user_name');
+      resetSuccess();
+      showToast('👋 Logged out successfully', 'ok');
+    }
+
+    // ── Form submit ──
+    document.getElementById('authForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const rawInput = document.getElementById('inp-email').value.trim();
+      const password = document.getElementById('inp-pass').value;
+      const name     = document.getElementById('inp-name').value.trim();
+
+      // Validation
+      if (!rawInput) { showAlert('Please enter your email or phone number.'); return; }
+      if (password.length < 6) { showAlert('Password must be at least 6 characters.'); return; }
+      if (currentTab === 'register' && !name) { showAlert('Please enter your full name.'); return; }
+
+      // Build email: if phone, convert to fake email
+      let email = rawInput;
+      if (usePhone) {
+        if (!/^\d{10}$/.test(rawInput)) { showAlert('Enter a valid 10-digit mobile number.'); return; }
+        email = rawInput + '@adityamedical.phone'; // internal convention
+      } else {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawInput)) { showAlert('Enter a valid email address.'); return; }
+      }
+
+      const btn = document.getElementById('authBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Please wait…';
+
+      try {
+        const sb = await getSupabase();
+
+        if (currentTab === 'login') {
+          // ── Login ──
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+
+          // Save user info locally
+          localStorage.setItem('am_user_email', email);
+          localStorage.setItem('am_user_name', data.user?.user_metadata?.full_name || '');
+          showSuccess(data.user?.user_metadata?.full_name || '', false);
+          showToast('✅ Logged in successfully!', 'ok');
+
+        } else {
+          // ── Register ──
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: name, phone: usePhone ? rawInput : '' } }
+          });
+          if (error) throw error;
+
+          localStorage.setItem('am_user_email', email);
+          localStorage.setItem('am_user_name', name);
+
+          // Supabase may require email confirmation — check session
+          if (data.session) {
+            showSuccess(name, true);
+            showToast('🎉 Account created & logged in!', 'ok');
+          } else {
+            // Email confirmation needed
+            document.getElementById('alertBox').classList.remove('alert-error');
+            document.getElementById('alertBox').classList.add('alert-info');
+            showAlert('✅ Account created! Check your email to confirm your account, then login.');
+            switchTab('login');
+            document.getElementById('alertBox').classList.remove('alert-error');
+            document.getElementById('alertBox').classList.add('alert-info');
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        const msg = err.message || 'Something went wrong. Please try again.';
+        // Friendly error messages
+        if (msg.includes('Invalid login credentials')) showAlert('❌ Wrong email/phone or password.');
+        else if (msg.includes('Email not confirmed'))  showAlert('📧 Please confirm your email first, then login.');
+        else if (msg.includes('already registered'))  showAlert('⚠️ This email is already registered. Try logging in.');
+        else showAlert('❌ ' + msg);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = currentTab === 'login' ? '🔐 Login' : '✅ Create Account';
+      }
+    });
+
+    // ── Forgot password ──
+    async function forgotPassword() {
+      const rawInput = document.getElementById('inp-email').value.trim();
+      if (!rawInput || usePhone) {
+        showAlert('Enter your email address above, then click Forgot Password.'); return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawInput)) {
+        showAlert('Enter a valid email address first.'); return;
+      }
+      const btn = document.getElementById('authBtn');
+      btn.disabled = true;
+      try {
+        const sb = await getSupabase();
+        const { error } = await sb.auth.resetPasswordForEmail(rawInput, {
+          redirectTo: window.location.origin + '/login.html'
+        });
+        if (error) throw error;
+        showToast('📧 Password reset email sent!', 'ok');
+        showAlert('✅ Check your inbox for a password reset link.');
+        document.getElementById('alertBox').classList.remove('alert-error');
+        document.getElementById('alertBox').classList.add('alert-info');
+        document.getElementById('alertBox').classList.add('show');
+      } catch(err) {
+        showAlert('❌ ' + (err.message || 'Could not send reset email.'));
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── Auto-check session on load ──
+    (async () => {
+      const sb = await getSupabase();
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        const name = session.user?.user_metadata?.full_name || localStorage.getItem('am_user_name') || '';
+        showSuccess(name, false);
+      }
+    })();
+  </script>
+</body>
+</html>

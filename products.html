@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products | Aditya Medical & General Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+</head>
+
+<body>
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <section class="products-section container">
+    <h2>Our Products</h2>
+
+    <!-- Search and Sort functionality -->
+    <div class="search-container" style="margin-bottom: 2rem;">
+      <div class="search-box">
+        <input type="text" id="productSearch" placeholder="Search products..." />
+        <button id="searchBtn">🔍 Search</button>
+      </div>
+      <div class="sort-container" style="margin-top: 1rem; text-align: center;">
+        <label for="sortSelect" style="font-weight: 600; color: var(--primary); margin-right: 0.5rem;">Sort by:</label>
+        <select id="sortSelect" style="padding: 0.5rem 1rem; border: 2px solid var(--gray-300); border-radius: var(--border-radius); background: var(--white); font-family: inherit; font-size: 0.9rem; cursor: pointer; transition: var(--transition);">
+          <option value="">Default</option>
+          <option value="price-low-high">Price: Low to High</option>
+          <option value="price-high-low">Price: High to Low</option>
+          <option value="alphabetical">Alphabetical</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="products-category">
+      <h3>Pain Relief</h3>
+      <div class="product-list" id="pain-relief-list"></div>
+    </div>
+
+    <div class="products-category">
+      <h3>Antibiotics</h3>
+      <div class="product-list" id="antibiotics-list"></div>
+    </div>
+
+    <div class="products-category">
+      <h3>Supplements</h3>
+      <div class="product-list" id="supplements-list"></div>
+    </div>
+
+    <div class="products-category">
+      <h3>Medical Devices</h3>
+      <div class="product-list" id="devices-list"></div>
+    </div>
+
+    <div class="products-category">
+      <h3>Personal Care</h3>
+      <div class="product-list" id="personal-care-list"></div>
+    </div>
+  </section>
+
+  <aside id="cartPanel" class="hidden">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <p id="totalPrice">Total: ₹0.00</p>
+    <button onclick="checkout()">Checkout</button>
+  </aside>
+
+  <!-- Dynamic Product Details Modal -->
+  <div id="detailsModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeDetailsModal()">×</button>
+      <div class="modal-body">
+        <div class="modal-img-wrap">
+          <img id="modalImg" src="" alt="" onerror="this.src='https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop&crop=center'" />
+        </div>
+        <div class="modal-content-wrap">
+          <h3 id="modalName">Medicine Name</h3>
+          <span id="modalType" class="med-type-tag">Type</span>
+          <p class="modal-price" id="modalPrice">₹0.00</p>
+          <div class="modal-desc-section">
+            <h5>Key Specifications:</h5>
+            <p><strong>Brand / Generic:</strong> <span id="modalBrand"> प्रिंसिविल </span></p>
+            <p><strong>Standard Dosage:</strong> <span id="modalDosage"> 10mg daily </span></p>
+            <p><strong>Common Side Effects:</strong> <span id="modalSide"> Nausea, headache </span></p>
+            <p><strong>Disease Focus:</strong> <span id="modalDisease"> Hypertension </span></p>
+          </div>
+          <button id="modalAddBtn" class="modal-add-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Info Modal -->
+  <div id="checkoutModal" class="modal-overlay hidden">
+    <div class="modal-card" style="max-width: 520px;">
+      <button class="modal-close" onclick="closeCheckoutModal()">×</button>
+      <div class="modal-content-wrap" style="padding: 2rem;">
+        <h3 style="margin-bottom: 0.3rem;">Secure Checkout</h3>
+        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.5rem;">Please review your order summary and fill in your delivery details.</p>
+        
+        <!-- Order Summary Area -->
+        <div id="checkoutSummary" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:1rem; margin-bottom:1.5rem; max-height:160px; overflow-y:auto;">
+          <!-- items list will render dynamically -->
+        </div>
+        
+        <!-- Delivery form -->
+        <form id="checkoutForm" onsubmit="submitCheckoutOrder(event)">
+          <div class="form-group" style="margin-bottom:0.9rem;">
+            <label style="font-size:0.85rem; font-weight:700; color:#475569; display:block; margin-bottom:0.3rem;">Full Name</label>
+            <input type="text" id="chk-name" placeholder="e.g. Rahul Sharma" required style="width:100%; padding:0.75rem; border:2px solid #e2e8f0; border-radius:10px; font-size:0.92rem;" />
+          </div>
+          <div class="form-group" style="margin-bottom:0.9rem;">
+            <label style="font-size:0.85rem; font-weight:700; color:#475569; display:block; margin-bottom:0.3rem;">Mobile Number</label>
+            <input type="tel" id="chk-phone" placeholder="10-digit phone number" pattern="[0-9]{10}" required style="width:100%; padding:0.75rem; border:2px solid #e2e8f0; border-radius:10px; font-size:0.92rem;" />
+          </div>
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label style="font-size:0.85rem; font-weight:700; color:#475569; display:block; margin-bottom:0.3rem;">Delivery Address</label>
+            <textarea id="chk-address" rows="3" placeholder="Enter complete home delivery address in Jalgaon" required style="width:100%; padding:0.75rem; border:2px solid #e2e8f0; border-radius:10px; font-size:0.92rem; font-family:inherit; resize:none;"></textarea>
+          </div>
+          
+          <button type="submit" id="submitOrderBtn" class="modal-add-btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8) !important; box-shadow:0 4px 14px rgba(37,99,235,0.3) !important;">Confirm Order (Pay on Delivery)</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Success Confirmation Modal -->
+  <div id="confirmSuccessModal" class="modal-overlay hidden">
+    <div class="modal-card" style="max-width: 440px; text-align: center;">
+      <div class="modal-content-wrap" style="padding: 2.5rem 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: bounce-success 0.6s ease;">🎉</div>
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: #15803d; margin-bottom: 0.5rem;">Order Placed Successfully!</h3>
+        <p style="color:#64748b; font-size:0.9rem; margin-bottom:1.5rem; line-height:1.5;">Thank you! Your order has been placed. Our pharmacist will verify details and dispatch it soon.</p>
+        
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:0.8rem; margin-bottom:1.5rem; font-size:0.85rem; color:#16a34a; font-weight:700;">
+          Order ID: <span id="successOrderId">#8492</span><br/>
+          Total Amount: <span id="successOrderTotal">₹0.00</span>
+        </div>
+        
+        <button onclick="closeSuccessModal()" class="modal-add-btn">Great! Continue Browsing</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Aditya Medical & General Store | All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Sticky bottom bar -->
+  <div class="sticky-bar">
+    <div class="sticky-bar-inner">
+      <a href="order.html" class="sb-order">🛒 Order</a>
+      <a href="tel:+917588662926" class="sb-call">📞 Call</a>
+      <a href="https://wa.me/917588662926" target="_blank" class="sb-wa">💬 WhatsApp</a>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
+  <script src="script.js"></script>
+  <script src="jarvis-medicine-database.js"></script>
+  <script src="jarvis-chatbot.js"></script>
+  <script>
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+    window.addEventListener('scroll', () => {
+      document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    const products = {
+  "pain-relief": [
+    {
+      name: "Paracetamol 500mg",
+      price: 45,
+      img: "images/paracetamol.png"
+
+    },
+    {
+      name: "Ibuprofen 400mg",
+      price: 60,
+      img: "images/ibuprofen.png"
+    },
+    {
+      name: "Dolo 650mg",
+      price: 55,
+      img: "images/Dolo 650.png"
+    }
+  ],
+  "antibiotics": [
+    {
+      name: "Amoxicillin 500mg",
+      price: 120,
+      img: "images/Amoxilin.png"
+    },
+    {
+      name: "Azithromycin 500mg",
+      price: 150,
+      img: "images/Azythromycin.png"
+    },
+    {
+      name: "Cefixime 200mg",
+      price: 180,
+      img: "images/cefixime.png"
+    }
+  ],
+  "supplements": [
+    {
+      name: "Vitamin D3 1000IU",
+      price: 80,
+      img: "images/Vitamin D3.png"
+    },
+    {
+      name: "Calcium Tablets",
+      price: 90,
+      img: "images/calcium.png"
+    },
+    {
+      name: "Multivitamins",
+      price: 100,
+      img: "images/Multivitamin.png"
+    }
+  ],
+  "devices": [
+    {
+      name: "Digital Thermometer",
+      price: 250,
+      img: "images/digital_thermometer.png"
+    },
+    {
+      name: "BP Monitor",
+      price: 1200,
+      img: "images/blood_pressure_monitor.png"
+    },
+    {
+      name: "Glucometer",
+      price: 900,
+      img: "images/glucoone_blood_glucose_monitor.png"
+    }
+  ],
+  "personal-care": [
+    {
+      name: "Hand Sanitizer 500ml",
+      price: 60,
+      img: "images/dettol_instant_hand_sanitizer.png"
+    },
+    {
+      name: "Face Mask Pack",
+      price: 20,
+      img: "images/face_mask_white.png"
+    },
+    {
+      name: "Nivea Body Lotion",
+      price: 100,
+      img: "images/nivea_body_milk_lotion.png"
+    }
+  ]
+};
+
+
+    function renderProductList(listId, items) {
+      const list = document.getElementById(listId);
+      list.innerHTML = "";
+      items.forEach(product => {
+        const div = document.createElement("div");
+        div.className = "product-card";
+        div.innerHTML = `
+          <img src="${product.img}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop&crop=center'" />
+          <h4>${product.name}</h4>
+          <p>₹${product.price.toFixed(2)}</p>
+          
+          <!-- Quantity Selector -->
+          <div class="product-qty-selector">
+            <button class="p-qty-btn dec-qty">-</button>
+            <span class="p-qty-val">1</span>
+            <button class="p-qty-btn inc-qty">+</button>
+          </div>
+          
+          <!-- Actions -->
+          <div class="product-actions">
+            <button class="add-btn-premium" data-name="${product.name}" data-price="${product.price}" data-img="${product.img}">Add to Cart</button>
+            <button class="details-btn" onclick="showProductDetails('${product.name}')">Details</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Initial render
+    renderProductList("pain-relief-list", products["pain-relief"]);
+    renderProductList("antibiotics-list", products["antibiotics"]);
+    renderProductList("supplements-list", products["supplements"]);
+    renderProductList("devices-list", products["devices"]);
+    renderProductList("personal-care-list", products["personal-care"]);
+
+    // Search functionality
+    document.getElementById('searchBtn').addEventListener('click', function () {
+      const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+      filterProducts(searchTerm);
+    });
+
+    document.getElementById('productSearch').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        document.getElementById('searchBtn').click();
+      }
+    });
+
+    function filterProducts(searchTerm) {
+      const currentSort = document.getElementById('sortSelect').value;
+      
+      if (currentSort === 'alphabetical') {
+        // For alphabetical, also sort sections
+        const productsSection = document.querySelector('.products-section');
+        const categoryElements = productsSection.querySelectorAll('.products-category');
+        
+        // Convert to array for sorting
+        const categoryArray = Array.from(categoryElements);
+        
+        // Sort categories by their h3 text (section titles)
+        categoryArray.sort((a, b) => {
+          const aTitle = a.querySelector('h3').textContent.toLowerCase();
+          const bTitle = b.querySelector('h3').textContent.toLowerCase();
+          return aTitle.localeCompare(bTitle);
+        });
+        
+        // Reorder the DOM elements
+        categoryArray.forEach(category => {
+          productsSection.appendChild(category);
+        });
+      }
+      
+      Object.keys(products).forEach(category => {
+        let filtered = products[category].filter(product =>
+          product.name.toLowerCase().includes(searchTerm)
+        );
+        
+        // Apply current sort to filtered results
+        if (currentSort) {
+          switch(currentSort) {
+            case 'price-low-high':
+              filtered.sort((a, b) => a.price - b.price);
+              break;
+            case 'price-high-low':
+              filtered.sort((a, b) => b.price - a.price);
+              break;
+            case 'alphabetical':
+              filtered.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+              break;
+          }
+        }
+        
+        renderProductList(`${category}-list`, filtered);
+      });
+    }
+
+    // Sort functionality
+    document.getElementById('sortSelect').addEventListener('change', function() {
+      const sortValue = this.value;
+      console.log('Sort select changed to:', sortValue); // Debug log
+      sortProducts(sortValue);
+    });
+
+    function sortProducts(sortType) {
+      const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+      console.log('Sorting by:', sortType); // Debug log
+      
+      if (sortType === 'alphabetical') {
+        // For alphabetical, sort both sections and products
+        const productsSection = document.querySelector('.products-section');
+        const categoryElements = productsSection.querySelectorAll('.products-category');
+        
+        // Convert to array for sorting
+        const categoryArray = Array.from(categoryElements);
+        
+        // Sort categories by their h3 text (section titles)
+        categoryArray.sort((a, b) => {
+          const aTitle = a.querySelector('h3').textContent.toLowerCase();
+          const bTitle = b.querySelector('h3').textContent.toLowerCase();
+          return aTitle.localeCompare(bTitle);
+        });
+        
+        // Reorder the DOM elements
+        categoryArray.forEach(category => {
+          productsSection.appendChild(category);
+        });
+        
+        // Now sort products within each category
+        Object.keys(products).forEach(category => {
+          let productsToSort = [...products[category]];
+          
+          // Apply search filter first if there's a search term
+          if (searchTerm) {
+            productsToSort = productsToSort.filter(product =>
+              product.name.toLowerCase().includes(searchTerm)
+            );
+          }
+          
+          // Sort products within the category
+          productsToSort.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+          
+          renderProductList(`${category}-list`, productsToSort);
+        });
+      } else {
+        // For price sorting, restore original section order first
+        const productsSection = document.querySelector('.products-section');
+        const categoryElements = productsSection.querySelectorAll('.products-category');
+        
+        // Restore original order (Pain Relief, Antibiotics, Supplements, Medical Devices, Personal Care)
+        const originalOrder = ['pain-relief', 'antibiotics', 'supplements', 'devices', 'personal-care'];
+        originalOrder.forEach(categoryId => {
+          const categoryElement = Array.from(categoryElements).find(el => 
+            el.querySelector(`#${categoryId}-list`)
+          );
+          if (categoryElement) {
+            productsSection.appendChild(categoryElement);
+          }
+        });
+        
+        // Then sort products within categories
+        Object.keys(products).forEach(category => {
+          let productsToSort = [...products[category]];
+          
+          // Apply search filter first if there's a search term
+          if (searchTerm) {
+            productsToSort = productsToSort.filter(product =>
+              product.name.toLowerCase().includes(searchTerm)
+            );
+          }
+          
+          // Then apply sorting
+          switch(sortType) {
+            case 'price-low-high':
+              productsToSort.sort((a, b) => a.price - b.price);
+              break;
+            case 'price-high-low':
+              productsToSort.sort((a, b) => b.price - a.price);
+              break;
+            default:
+              // Default order (no sorting)
+              break;
+          }
+          
+          renderProductList(`${category}-list`, productsToSort);
+        });
+      }
+    }
+
+    // Check for search parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+    if (searchParam) {
+      document.getElementById('productSearch').value = searchParam;
+      filterProducts(searchParam);
+    }
+
+    // ── Enhanced Ecommerce Functionality ──
+    
+    // Product card quantity adjustment
+    document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("p-qty-btn")) {
+        const card = e.target.closest(".product-card");
+        if (!card) return;
+        const valEl = card.querySelector(".p-qty-val");
+        let currentVal = parseInt(valEl.textContent);
+        
+        if (e.target.classList.contains("inc-qty")) {
+          currentVal++;
+        } else if (e.target.classList.contains("dec-qty")) {
+          if (currentVal > 1) currentVal--;
+        }
+        
+        valEl.textContent = currentVal;
+      }
+    });
+
+    // Premium Cart feedback toast helper
+    function showCartToast(msg, type = "ok") {
+      const t = document.getElementById('toast');
+      if (t) {
+        t.textContent = msg;
+        t.className = 'show ' + type;
+        setTimeout(() => { t.className = ''; }, 3500);
+      }
+    }
+    window.showCartToast = showCartToast; // Expose globally for cart.js
+
+    // Open Details Modal using database or fallback details
+    function showProductDetails(name) {
+      const db = new GlobalMedicineDatabase();
+      const med = db.getMedicineByName(name);
+      
+      const modal = document.getElementById("detailsModal");
+      const modalImg = document.getElementById("modalImg");
+      const modalName = document.getElementById("modalName");
+      const modalType = document.getElementById("modalType");
+      const modalPrice = document.getElementById("modalPrice");
+      const modalBrand = document.getElementById("modalBrand");
+      const modalDosage = document.getElementById("modalDosage");
+      const modalSide = document.getElementById("modalSide");
+      const modalDisease = document.getElementById("modalDisease");
+      const modalAddBtn = document.getElementById("modalAddBtn");
+      
+      // Find product from local array to get image and correct price
+      let localProd = null;
+      for (const cat of Object.keys(products)) {
+        const found = products[cat].find(p => p.name.toLowerCase().includes(name.toLowerCase()));
+        if (found) {
+          localProd = found;
+          break;
+        }
+      }
+      
+      const price = localProd ? localProd.price : (med ? med.price : 100);
+      const img = localProd ? localProd.img : "images/Aditya Medical.png";
+      
+      modalImg.src = img;
+      modalImg.onerror = function() { this.src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop&crop=center'; };
+      modalName.textContent = localProd ? localProd.name : name;
+      modalPrice.textContent = `₹${price.toFixed(2)}`;
+      
+      if (med) {
+        modalType.textContent = med.type || "OTC Medicine";
+        modalType.style.display = "inline-block";
+        modalBrand.textContent = med.brand || "N/A";
+        modalDosage.textContent = med.dosage || "As advised by doctor";
+        modalSide.textContent = med.sideEffects || "None reported under standard doses";
+        modalDisease.textContent = med.diseaseContext || "General Health";
+      } else {
+        modalType.textContent = "OTC Medicine";
+        modalType.style.display = "inline-block";
+        modalBrand.textContent = "Generic Brand";
+        modalDosage.textContent = "Take as directed on packaging";
+        modalSide.textContent = "No severe side effects reported";
+        modalDisease.textContent = "Wellness & Daily Health";
+      }
+      
+      // Set up add to cart button in modal
+      modalAddBtn.onclick = function() {
+        const found = cart.find(item => item.name === modalName.textContent);
+        if (found) {
+          found.quantity += 1;
+        } else {
+          cart.push({ name: modalName.textContent, price, img, quantity: 1 });
+        }
+        updateCartUI();
+        closeDetailsModal();
+        showCartToast(`✓ Added ${modalName.textContent} to cart`, "ok");
+      };
+      
+      modal.classList.remove("hidden");
+    }
+    window.showProductDetails = showProductDetails;
+
+    function closeDetailsModal() {
+      document.getElementById("detailsModal").classList.add("hidden");
+    }
+    window.closeDetailsModal = closeDetailsModal;
+
+    // Enhanced Checkout Flow with Details Form popup
+    function checkout() {
+      if (cart.length === 0) {
+        showCartToast("Your cart is empty!", "err");
+        return;
+      }
+      
+      // Close cart drawer
+      const cartPanel = document.getElementById("cartPanel");
+      if (cartPanel) cartPanel.classList.add("hidden");
+      
+      // Render Summary inside checkout modal
+      const summaryEl = document.getElementById("checkoutSummary");
+      let total = 0;
+      let summaryHTML = "";
+      
+      cart.forEach(item => {
+        summaryHTML += `
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem; color:#475569;">
+            <span>${item.name} (x${item.quantity})</span>
+            <span style="font-weight:700;">₹${(item.price * item.quantity).toFixed(2)}</span>
+          </div>
+        `;
+        total += item.price * item.quantity;
+      });
+      
+      summaryHTML += `
+        <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:800; color:#1e293b; border-top:1px solid #e2e8f0; padding-top:0.6rem; margin-top:0.6rem;">
+          <span>Grand Total</span>
+          <span style="color:#22c55e;">₹${total.toFixed(2)}</span>
+        </div>
+      `;
+      
+      summaryEl.innerHTML = summaryHTML;
+      
+      // Autofill session details if logged in
+      const storedName = localStorage.getItem('am_user_name') || '';
+      document.getElementById("chk-name").value = storedName;
+      document.getElementById("chk-phone").value = "";
+      document.getElementById("chk-address").value = "";
+      
+      // Try to fetch custom phone from offline session storage if available
+      try {
+        const userStr = localStorage.getItem('authUser');
+        if (userStr) {
+          const userObj = JSON.parse(userStr);
+          if (userObj.phone) document.getElementById("chk-phone").value = userObj.phone;
+        }
+      } catch(e) {}
+      
+      document.getElementById("checkoutModal").classList.remove("hidden");
+    }
+    window.checkout = checkout;
+
+    function closeCheckoutModal() {
+      document.getElementById("checkoutModal").classList.add("hidden");
+    }
+    window.closeCheckoutModal = closeCheckoutModal;
+
+    function closeSuccessModal() {
+      document.getElementById("confirmSuccessModal").classList.add("hidden");
+    }
+    window.closeSuccessModal = closeSuccessModal;
+
+    // Submit Checkout form directly to Supabase and show premium Success popup
+    async function submitCheckoutOrder(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById("chk-name").value.trim();
+      const phone = document.getElementById("chk-phone").value.trim();
+      const address = document.getElementById("chk-address").value.trim();
+      const email = localStorage.getItem('am_user_email') || 'guest@adityamedical.com';
+      
+      const submitBtn = document.getElementById("submitOrderBtn");
+      const originalText = submitBtn.textContent;
+      
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Submitting Order...";
+        
+        // Prepare orders medicines text list
+        const itemsText = cart.map(i => `${i.name} (${i.quantity}x) - ₹${i.price}`).join(', ');
+        const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const fullMedicinesText = `${itemsText} (Delivery Address: ${address})`;
+        
+        // Setup payload for Supabase insertion
+        const sbUrl = "https://rfcxhcucpzaplbprmbqm.supabase.co/rest/v1/orders";
+        const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmY3hoY3VjcHphcGxicHJtYnFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NzgxOTcsImV4cCI6MjA5MDM1NDE5N30.ppk-3ExeHqkw3IHYz6Rgarr4FqMoIZaWShHgY2PI_Ls";
+        
+        const resp = await fetch(sbUrl, {
+          method: 'POST',
+          headers: {
+            'apikey': sbKey,
+            'Authorization': 'Bearer ' + sbKey,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify({
+            name: name,
+            phone: phone,
+            email: email, // Associated email so it shows in customer dashboard!
+            medicines: fullMedicinesText,
+            status: 'pending',
+            created_at: new Date().toISOString()
+          })
+        });
+        
+        if (!resp.ok) throw new Error('Order submission failed. Please try again.');
+        
+        const dataArr = await resp.json();
+        const orderData = dataArr[0] || { id: Math.floor(1000 + Math.random() * 9000) };
+        
+        // Clear cart
+        cart = [];
+        localStorage.setItem("cart", JSON.stringify([]));
+        updateCartUI();
+        
+        // Close checkout modal
+        closeCheckoutModal();
+        
+        // Show beautiful success confirmation modal
+        document.getElementById("successOrderId").textContent = `#${orderData.id.toString().slice(-4).toUpperCase()}`;
+        document.getElementById("successOrderTotal").textContent = `₹${totalAmount.toFixed(2)}`;
+        document.getElementById("confirmSuccessModal").classList.remove("hidden");
+        
+      } catch (err) {
+        showCartToast(err.message, "err");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+    window.submitCheckoutOrder = submitCheckoutOrder;
+
+    // ── Check Login Session ──
+    function checkSess() {
+      const storedName = localStorage.getItem('am_user_name');
+      const vel = document.getElementById('userWelcome');
+      if (storedName && vel) {
+        const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+        vel.innerHTML = `
+          <div class="user-welcome">
+            <div class="user-avatar">${firstChar}</div>
+            <span class="user-name-text">${storedName.split(' ')[0]}</span>
+          </div>
+        `;
+        vel.style.display = 'block';
+        
+        // Hide Login if logged in
+        const loginLinks = document.querySelectorAll('a[href="login.html"]');
+        loginLinks.forEach(l => {
+          l.textContent = '👤 Account';
+          l.classList.remove('hn-ghost');
+        });
+      }
+    }
+    checkSess();
+  </script>
+</body>
+
+</html>

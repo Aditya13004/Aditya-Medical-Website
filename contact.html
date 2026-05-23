@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | Aditya Medical & General Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+</head>
+<body>
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+  
+  <section class="hero">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p>Get in touch with us for any queries or support.</p>
+    </div>
+  </section>
+  
+  <section class="contact">
+    <div class="container">
+      <h2>Send us a Message</h2>
+      <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact" />
+        <p style="display:none;">
+          <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+        </p>
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <input type="tel" name="phone" placeholder="Your Phone Number" pattern="^[0-9]{10}$" />
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+
+      <!-- Contact Submission Success Modal -->
+      <div id="contactSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:10px; padding:20px; width: 90%; max-width: 420px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center;">
+          <h3 style="margin-top:0;">Thanks! We received your message</h3>
+          <p>We will get back to you shortly.</p>
+          <button id="closeContactSuccess" style="margin-top:10px; padding:10px 16px; background:#2563eb; color:#fff; border:none; border-radius:8px; cursor:pointer;">OK</button>
+        </div>
+      </div>
+      
+      <div class="contact-details">
+        <h3>Contact Information</h3>
+        <p><strong>📞 Phone:</strong> +91-7588662926</p>
+        <p><strong>📧 Email:</strong> adityamedical@gmail.com</p>
+        <p><strong>📍 Address:</strong> Near XYZ Hospital, Jalgaon, Maharashtra</p>
+        <p><strong>🕒 Hours:</strong> Monday - Sunday: 8:00 AM - 10:00 PM</p>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Aditya Medical & General Store | All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <script src="cart.js"></script>
+  <script src="script.js"></script>
+  <script src="jarvis-medicine-database.js"></script>
+  <script src="jarvis-chatbot.js"></script>
+  <script>
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+    window.addEventListener('scroll', () => {
+      document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 60);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form[name="contact"]');
+      const modal = document.getElementById('contactSuccessModal');
+      const closeBtn = document.getElementById('closeContactSuccess');
+      if (form && modal && closeBtn) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          try {
+            // Optional: you could POST this to a backend endpoint here
+            // For now, show a success popup and clear the form
+            modal.style.display = 'flex';
+            form.reset();
+          } catch (_) {
+            modal.style.display = 'flex';
+          }
+        });
+        closeBtn.addEventListener('click', function() {
+          modal.style.display = 'none';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

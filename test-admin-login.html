@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .result {
+      background: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Admin Login Diagnostic Test</h1>
+  
+  <div class="test-section">
+    <h2>Test 1: SessionStorage Check</h2>
+    <button onclick="testSessionStorage()">Test SessionStorage</button>
+    <div id="result1" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 2: Backend API Check</h2>
+    <button onclick="testBackendAPI()">Test Backend API</button>
+    <div id="result2" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 3: Auth.js Functions</h2>
+    <button onclick="testAuthFunctions()">Test Auth Functions</button>
+    <div id="result3" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 4: Full Login Flow</h2>
+    <input type="text" id="testPassword" placeholder="Enter password" value="admin@123" style="padding: 8px; margin: 5px;">
+    <button onclick="testFullLogin()">Test Login</button>
+    <div id="result4" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Quick Links</h2>
+    <a href="admin-login.html" target="_blank"><button>Open Admin Login Page</button></a>
+    <a href="admin.html" target="_blank"><button>Open Admin Dashboard</button></a>
+    <a href="http://localhost:3000" target="_blank"><button>Open Main Site</button></a>
+  </div>
+
+  <script>
+    function testSessionStorage() {
+      const result = document.getElementById('result1');
+      try {
+        // Test write
+        sessionStorage.setItem('test_key', 'test_value');
+        
+        // Test read
+        const value = sessionStorage.getItem('test_key');
+        
+        // Test remove
+        sessionStorage.removeItem('test_key');
+        
+        result.innerHTML = `<span class="success">✓ SessionStorage is working correctly</span>`;
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ SessionStorage error: ${error.message}</span>`;
+      }
+    }
+    
+    async function testBackendAPI() {
+      const result = document.getElementById('result2');
+      result.innerHTML = 'Testing...';
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: 'admin@123' })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          result.innerHTML = `<span class="success">✓ Backend API is working<br>Token: ${data.token}</span>`;
+        } else {
+          result.innerHTML = `<span class="error">✗ Backend API returned error: ${data.message}</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Backend API error: ${error.message}</span>`;
+      }
+    }
+    
+    function testAuthFunctions() {
+      const result = document.getElementById('result3');
+      
+      if (typeof window.getApiUrl === 'function') {
+        const apiUrl = window.getApiUrl('/api/auth/admin/login');
+        result.innerHTML = `<span class="success">✓ getApiUrl function available<br>API URL: ${apiUrl}</span>`;
+      } else {
+        result.innerHTML = `<span class="error">✗ getApiUrl function not found</span>`;
+      }
+    }
+    
+    async function testFullLogin() {
+      const password = document.getElementById('testPassword').value;
+      const result = document.getElementById('result4');
+      const ADMIN_TOKEN_KEY = 'am_admin_auth';
+      
+      result.innerHTML = 'Testing login flow...';
+      
+      try {
+        // Step 1: Call backend API
+        const response = await fetch('http://localhost:3000/api/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          // Step 2: Store token
+          sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+          
+          // Step 3: Verify storage
+          const stored = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+          
+          if (stored) {
+            result.innerHTML = `<span class="success">✓ Login successful!<br>Token stored: ${stored}<br>Redirecting to admin dashboard...</span>`;
+            
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 2000);
+          } else {
+            result.innerHTML = `<span class="error">✗ Failed to store token in sessionStorage</span>`;
+          }
+        } else {
+          result.innerHTML = `<span class="error">✗ Login failed: ${data.message}</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Login error: ${error.message}</span>`;
+      }
+    }
+    
+    // Load auth.js
+    const script = document.createElement('script');
+    script.src = 'auth.js';
+    document.head.appendChild(script);
+  </script>
+</body>
+</html>

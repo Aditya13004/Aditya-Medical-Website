@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – Aditya Medical</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+
+    :root {
+      --bg:    #0f172a;
+      --card:  #1e293b;
+      --card2: #334155;
+      --border:#334155;
+      --text:  #f8fafc;
+      --sub:   #94a3b8;
+      --green: #22c55e;
+      --blue:  #3b82f6;
+      --red:   #ef4444;
+      --yellow:#f59e0b;
+    }
+
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-brand { display:flex; align-items:center; gap:.8rem; }
+    .topbar-brand img { height:38px; border-radius:10px; }
+    .topbar-brand h1 { font-size:1.15rem; font-weight:800; }
+    .topbar-brand span { font-size:.8rem; color: var(--sub); display:block; font-weight:400; }
+
+    .topbar-right { display:flex; align-items:center; gap:1rem; }
+
+    .badge-live {
+      background: rgba(34,197,94,.15); border:1px solid rgba(34,197,94,.4);
+      color: var(--green); padding:.35rem .8rem; border-radius:50px;
+      font-size:.78rem; font-weight:700; display:flex; align-items:center; gap:.4rem;
+    }
+    .badge-live::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .btn-logout {
+      background: rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.3);
+      color: #fca5a5; padding:.5rem 1.1rem; border-radius:8px;
+      font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,.25); }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap: 1rem; padding: 1.5rem 2rem;
+    }
+    .stat-card {
+      background: var(--card); border:1px solid var(--border); border-radius:14px;
+      padding: 1.2rem 1.4rem; display:flex; align-items:center; gap:1rem;
+    }
+    .stat-icon { font-size:2rem; }
+    .stat-val  { font-size:1.8rem; font-weight:800; line-height:1; }
+    .stat-lbl  { font-size:.8rem; color: var(--sub); margin-top:.2rem; }
+
+    /* ── ORDERS TABLE ── */
+    .orders-section { padding: 0 2rem 3rem; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.2rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .section-header h2 { font-size:1.3rem; font-weight:800; }
+
+    .filter-tabs { display:flex; gap:.5rem; }
+    .tab {
+      padding:.45rem 1rem; border-radius:8px; border:1px solid var(--border);
+      background:transparent; color: var(--sub); font-size:.85rem; font-weight:600;
+      cursor:pointer; transition:all .2s;
+    }
+    .tab.active { background: var(--blue); color:#fff; border-color: var(--blue); }
+
+    .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); }
+    table { width:100%; border-collapse: collapse; min-width: 700px; }
+    thead { background: var(--card); }
+    thead th {
+      padding: 1rem 1.2rem; text-align:left;
+      font-size:.82rem; font-weight:700; color: var(--sub);
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+    tbody tr.new-order { animation: flashRow .8s ease; }
+    @keyframes flashRow { 0%{background:rgba(34,197,94,.18)} 100%{background:transparent} }
+
+    td { padding: .9rem 1.2rem; font-size:.88rem; vertical-align: middle; }
+
+    .badge {
+      display:inline-flex; align-items:center; gap:.35rem;
+      padding:.3rem .8rem; border-radius:50px; font-size:.78rem; font-weight:700;
+      white-space: nowrap;
+    }
+    .badge-pending  { background:rgba(245,158,11,.15); color:var(--yellow); border:1px solid rgba(245,158,11,.3); }
+    .badge-accepted { background:rgba(59,130,246,.15);  color:var(--blue);   border:1px solid rgba(59,130,246,.3); }
+    .badge-delivered{ background:rgba(34,197,94,.15);  color:var(--green);  border:1px solid rgba(34,197,94,.3); }
+
+    .medicines-text { max-width: 220px; white-space: pre-wrap; word-break: break-word; color: var(--sub); }
+
+    .actions { display:flex; gap:.5rem; }
+    .btn-accept, .btn-deliver {
+      padding:.45rem .9rem; border-radius:8px; border:none;
+      font-size:.8rem; font-weight:700; cursor:pointer; transition:all .2s; white-space:nowrap;
+    }
+    .btn-accept  { background:rgba(59,130,246,.15); color:var(--blue);  border:1px solid rgba(59,130,246,.3); }
+    .btn-accept:hover  { background:var(--blue); color:#fff; }
+    .btn-deliver { background:rgba(34,197,94,.15); color:var(--green); border:1px solid rgba(34,197,94,.3); }
+    .btn-deliver:hover { background:var(--green); color:#fff; }
+
+    .empty-state {
+      padding: 4rem 2rem; text-align:center; color: var(--sub);
+    }
+    .empty-state .icon { font-size:3rem; margin-bottom:1rem; }
+
+    /* ── Toast ── */
+    #toast {
+      position:fixed; bottom:2rem; right:2rem;
+      background: var(--card2); color: #fff;
+      padding:.9rem 1.6rem; border-radius: 12px;
+      font-size:.9rem; font-weight:600;
+      opacity:0; transition:all .4s; pointer-events:none;
+      z-index:9999; box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      transform: translateY(10px);
+    }
+    #toast.show { opacity:1; transform: translateY(0); }
+    #toast.success { border-left: 4px solid var(--green); }
+    #toast.error   { border-left: 4px solid var(--red); }
+
+    /* ── Loading ── */
+    .spinner {
+      display:inline-block; width:18px; height:18px;
+      border:2px solid rgba(255,255,255,.2); border-top-color:#fff;
+      border-radius:50%; animation:spin .6s linear infinite;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    @media(max-width:768px) {
+      .topbar { padding:.8rem 1rem; }
+      .stats-row { padding:1rem; }
+      .orders-section { padding:0 1rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <img src="images/Aditya Medical.png" alt="Logo" />
+      <div>
+        <h1>Admin Dashboard</h1>
+        <span>Aditya Medical &amp; General Store</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="badge-live">LIVE</div>
+      <button class="btn-logout" data-action="logout">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div>
+        <div class="stat-val" id="statTotal">–</div>
+        <div class="stat-lbl">Total Orders</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏳</div>
+      <div>
+        <div class="stat-val" id="statPending">–</div>
+        <div class="stat-lbl">Pending</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div>
+        <div class="stat-val" id="statAccepted">–</div>
+        <div class="stat-lbl">Accepted</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🚚</div>
+      <div>
+        <div class="stat-val" id="statDelivered">–</div>
+        <div class="stat-lbl">Delivered</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS -->
+  <div class="orders-section">
+    <div class="section-header">
+      <h2>📋 Orders</h2>
+      <div class="filter-tabs">
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="pending">Pending</button>
+        <button class="tab" data-filter="accepted">Accepted</button>
+        <button class="tab" data-filter="delivered">Delivered</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Medicines</th>
+            <th>Status</th>
+            <th>Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="7" style="text-align:center;padding:3rem;color:#64748b">Loading orders… <span class="spinner"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="supabase.js"></script>
+  <script>
+    // ── Auth guard ──
+    const ADMIN_TOKEN_KEY = 'am_admin_auth';
+    
+    // Check if we were redirected from a failed login
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginError = urlParams.get('error');
+    
+    if (loginError) {
+      alert('Session Error: ' + decodeURIComponent(loginError));
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Validate admin token
+    if (!sessionStorage.getItem(ADMIN_TOKEN_KEY)) {
+      console.warn('Admin access denied: No authentication token found');
+      window.location.href = 'admin-login.html';
+    } else {
+      console.log('✓ Admin token validated');
+    }
+
+    function logout() {
+      sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+      window.location.href = 'admin-login.html';
+    }
+
+    // ── State ──
+    let allOrders  = [];
+    let activeFilter = 'all';
+
+    // ── Toast ──
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show ' + type;
+      setTimeout(() => { t.className = ''; }, 3500);
+    }
+
+    // ── Helpers ──
+    function formatTime(ts) {
+      if (!ts) return '—';
+      const d = new Date(ts);
+      return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) +
+             ' ' + d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function statusBadge(s) {
+      const map = {
+        pending:   '⏳ Pending',
+        accepted:  '✅ Accepted',
+        delivered: '🚚 Delivered'
+      };
+      return `<span class="badge badge-${s}">${map[s] || s}</span>`;
+    }
+
+    function setFilter(f, btn) {
+      activeFilter = f;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderTable();
+    }
+
+    // ── Update stats ──
+    function updateStats() {
+      document.getElementById('statTotal').textContent     = allOrders.length;
+      document.getElementById('statPending').textContent   = allOrders.filter(o => o.status === 'pending').length;
+      document.getElementById('statAccepted').textContent  = allOrders.filter(o => o.status === 'accepted' || o.status === 'confirmed').length;
+      document.getElementById('statDelivered').textContent = allOrders.filter(o => o.status === 'delivered').length;
+    }
+
+    // ── Render table ──
+    function renderTable(highlightId = null) {
+      const orders = activeFilter === 'all'
+        ? allOrders
+        : allOrders.filter(o => (o.status || '').toLowerCase() === activeFilter.toLowerCase());
+
+      const tbody = document.getElementById('ordersBody');
+
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">📭</div>No orders found.</div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map((o, i) => `
+        <tr id="row-${o.id}" class="${o.id === highlightId ? 'new-order' : ''}">
+          <td>${i + 1}</td>
+          <td><strong>${escHtml(o.customer_name || o.name || o.customerName || 'Customer')}</strong></td>
+          <td><a href="tel:${escHtml(o.phone || '')}" style="color:#60a5fa;text-decoration:none">📞 ${escHtml(o.phone || 'N/A')}</a></td>
+          <td><div class="medicines-text">${escHtml(getMedicinesText(o))}</div></td>
+          <td>${statusBadge((o.status || '').toLowerCase())}</td>
+          <td style="color:#64748b;font-size:.8rem">${formatTime(o.created_at)}</td>
+          <td>
+            <div class="actions">
+              ${(o.status || '').toLowerCase() === 'pending'   ? `<button class="btn-accept"  data-order-id="${o.id}" data-order-action="accepted">✅ Accept</button>`   : ''}
+              ${(o.status || '').toLowerCase() === 'accepted'  ? `<button class="btn-deliver" data-order-id="${o.id}" data-order-action="delivered">🚚 Deliver</button>` : ''}
+              ${(o.status || '').toLowerCase() === 'delivered' ? `<span style="color:#64748b;font-size:.8rem">Done</span>` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+    
+    function getMedicinesText(order) {
+      if (order.medicines) return order.medicines;
+      if (order.items && Array.isArray(order.items)) {
+        return order.items.map(item => item.medicine_name || item.medicineName || item.name).join(', ');
+      }
+      if (order.medicines_text) return order.medicines_text;
+      return 'N/A';
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Fetch orders ──
+    async function fetchOrders() {
+      try {
+        const sb = await getSupabase();
+        console.log('📡 Attempting to fetch orders from Supabase...');
+        
+        const { data, error } = await sb
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('❌ Supabase error details:', error);
+          showToast('❌ Failed to load orders: ' + error.message, 'error');
+          return;
+        }
+        
+        console.log('✅ Successfully fetched orders:', data ? data.length : 0);
+        allOrders = data || [];
+        updateStats();
+        renderTable();
+        
+        if (data && data.length > 0) {
+          console.log('📊 First order sample:', data[0]);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching orders:', error);
+        showToast('❌ Failed to load orders: ' + error.message, 'error');
+        allOrders = [];
+        updateStats();
+        renderTable();
+      }
+    }
+
+    // ── Update order status ──
+    async function updateStatus(id, newStatus) {
+      try {
+        const sb = await getSupabase();
+        const { error } = await sb.from('orders').update({ status: newStatus }).eq('id', id);
+        
+        if (error) {
+          console.error('❌ Update error:', error);
+          showToast('❌ Update failed: ' + error.message, 'error');
+          return;
+        }
+
+        // Update local state
+        const idx = allOrders.findIndex(o => o.id === id);
+        if (idx !== -1) {
+          allOrders[idx].status = newStatus;
+          updateStats();
+          renderTable();
+        }
+        
+        showToast(`✅ Order #${id} marked as ${newStatus}`, 'success');
+      } catch (error) {
+        console.error('❌ Error updating order:', error);
+        showToast('❌ Update failed: ' + error.message, 'error');
+      }
+    }
+
+    // ── Real-time subscription ──
+    async function subscribeRealtime() {
+      try {
+        const sb = await getSupabase();
+        sb.channel('orders-changes')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, payload => {
+            const { eventType, new: newRow, old: oldRow } = payload;
+
+            if (eventType === 'INSERT') {
+              allOrders.unshift(newRow);
+              showToast('🔔 New order from ' + (newRow.customer_name || newRow.name || newRow.customerName || 'Customer') + '!', 'success');
+              updateStats();
+              renderTable(newRow.id);
+
+            } else if (eventType === 'UPDATE') {
+              const idx = allOrders.findIndex(o => o.id === newRow.id);
+              if (idx !== -1) allOrders[idx] = newRow;
+              updateStats();
+              renderTable();
+
+            } else if (eventType === 'DELETE') {
+              allOrders = allOrders.filter(o => o.id !== oldRow.id);
+              updateStats();
+              renderTable();
+            }
+          })
+          .subscribe();
+      } catch (error) {
+        console.error('❌ Realtime subscription error:', error);
+      }
+    }
+
+    // ── Init ──
+    (async () => {
+      await fetchOrders();
+      await subscribeRealtime();
+    })();
+
+    // ── CSP-Safe Global Event Listener ──
+    document.addEventListener('click', (e) => {
+      // Handle Tabs
+      if (e.target.classList.contains('tab') && e.target.hasAttribute('data-filter')) {
+        setFilter(e.target.getAttribute('data-filter'), e.target);
+      }
+      
+      // Handle Order Status Buttons
+      if (e.target.hasAttribute('data-order-id') && e.target.hasAttribute('data-order-action')) {
+        const orderId = parseInt(e.target.getAttribute('data-order-id'), 10);
+        const action = e.target.getAttribute('data-order-action');
+        updateStatus(orderId, action);
+      }
+
+      // Handle Logout
+      if (e.target.getAttribute('data-action') === 'logout') {
+        logout();
+      }
+    });
+
+  </script>
+</body>
+</html>

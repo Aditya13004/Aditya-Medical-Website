@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Medicine Recommendations | Aditya Medical & General Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    .ai-recommendation-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 2rem 0;
+      min-height: 100vh;
+    }
+
+    .ai-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .ai-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .ai-header h1 {
+      color: #2563eb;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ai-header p {
+      font-size: 1.1rem;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .assessment-form {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+      color: #1e293b;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .checkbox-item:hover {
+      background: #e2e8f0;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .submit-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .recommendations-container {
+      display: none;
+    }
+
+    .recommendation-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #2563eb;
+    }
+
+    .confidence-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+
+    .medicines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .medicine-card {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .medicine-card:hover {
+      border-color: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .medicine-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .medicine-price {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #059669;
+      margin-bottom: 1rem;
+    }
+
+    .medicine-details {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .prescription-required {
+      background: #fef3c7;
+      color: #d97706;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .warnings-section {
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .warnings-section h4 {
+      color: #dc2626;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .warning-item {
+      background: white;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      color: #991b1b;
+      font-size: 0.9rem;
+    }
+
+    .disclaimer-section {
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .disclaimer-section h4 {
+      color: #1d4ed8;
+      margin-bottom: 1rem;
+    }
+
+    .disclaimer-text {
+      color: #1e40af;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .consultation-cta {
+      background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .consultation-cta h3 {
+      margin-bottom: 1rem;
+    }
+
+    .consultation-btn {
+      background: white;
+      color: #7c3aed;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .consultation-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 2rem;
+      display: none;
+    }
+
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .add-to-cart-btn {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .add-to-cart-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .ai-header h1 {
+        font-size: 2rem;
+      }
+      
+      .assessment-form {
+        padding: 1.5rem;
+      }
+      
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+      
+      .medicines-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <section class="ai-recommendation-section">
+    <div class="ai-container">
+      <div class="ai-header">
+        <h1>🤖 AI Medicine Recommendations</h1>
+        <p>Get personalized medicine recommendations based on your symptoms and medical profile. Our AI system analyzes your symptoms and suggests appropriate medications with proper dosages and safety information.</p>
+      </div>
+
+      <div class="assessment-form" id="assessmentForm">
+        <form id="symptomAssessmentForm">
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h3>👤 Basic Information</h3>
+            <div class="form-group">
+              <label for="age">Age *</label>
+              <input type="number" id="age" name="age" min="1" max="120" required>
+            </div>
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <input type="number" id="weight" name="weight" min="1" max="200">
+            </div>
+            <div class="form-group">
+              <label for="gender">Gender *</label>
+              <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Symptoms -->
+          <div class="form-section">
+            <h3>🩺 Current Symptoms</h3>
+            <p>Select all symptoms you are currently experiencing:</p>
+            <div class="checkbox-group" id="symptomsGroup">
+              <!-- Common symptoms -->
+              <div class="checkbox-item">
+                <input type="checkbox" id="fever" name="symptoms" value="fever">
+                <label for="fever">Fever/High temperature</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="headache" name="symptoms" value="headache">
+                <label for="headache">Headache</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="cough" name="symptoms" value="cough">
+                <label for="cough">Cough</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="runnyNose" name="symptoms" value="runny nose">
+                <label for="runnyNose">Runny nose</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="soreThroat" name="symptoms" value="sore throat">
+                <label for="soreThroat">Sore throat</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="bodyAche" name="symptoms" value="body ache">
+                <label for="bodyAche">Body ache</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="nausea" name="symptoms" value="nausea">
+                <label for="nausea">Nausea</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="stomachPain" name="symptoms" value="stomach pain">
+                <label for="stomachPain">Stomach pain</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="diarrhea" name="symptoms" value="diarrhea">
+                <label for="diarrhea">Diarrhea</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="dizziness" name="symptoms" value="dizziness">
+                <label for="dizziness">Dizziness</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chestPain" name="symptoms" value="chest pain">
+                <label for="chestPain">Chest pain</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="shortnessBreath" name="symptoms" value="shortness of breath">
+                <label for="shortnessBreath">Shortness of breath</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="skinRash" name="symptoms" value="skin rash">
+                <label for="skinRash">Skin rash</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="fatigue" name="symptoms" value="fatigue">
+                <label for="fatigue">Weakness/Fatigue</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="burningChest" name="symptoms" value="burning sensation in chest">
+                <label for="burningChest">Burning sensation in chest</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="frequentUrination" name="symptoms" value="frequent urination">
+                <label for="frequentUrination">Frequent urination</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="increasedThirst" name="symptoms" value="increased thirst">
+                <label for="increasedThirst">Increased thirst</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="blurredVision" name="symptoms" value="blurred vision">
+                <label for="blurredVision">Blurred vision</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="otherSymptoms">Other symptoms (please describe):</label>
+              <textarea id="otherSymptoms" name="otherSymptoms" rows="3" placeholder="Describe any other symptoms you're experiencing..."></textarea>
+            </div>
+          </div>
+
+          <!-- Medical History -->
+          <div class="form-section">
+            <h3>📋 Medical History</h3>
+            <div class="form-group">
+              <label for="medicalConditions">Do you have any of these medical conditions?</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="diabetes" name="medicalHistory" value="diabetes">
+                  <label for="diabetes">Diabetes</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="hypertension" name="medicalHistory" value="hypertension">
+                  <label for="hypertension">High Blood Pressure</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="heartDisease" name="medicalHistory" value="heart disease">
+                  <label for="heartDisease">Heart Disease</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="kidneyDisease" name="medicalHistory" value="kidney disease">
+                  <label for="kidneyDisease">Kidney Disease</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="liverDisease" name="medicalHistory" value="liver disease">
+                  <label for="liverDisease">Liver Disease</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="asthma" name="medicalHistory" value="asthma">
+                  <label for="asthma">Asthma</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="currentMedications">Current Medications:</label>
+              <textarea id="currentMedications" name="currentMedications" rows="2" placeholder="List any medications you're currently taking..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="allergies">Known Allergies:</label>
+              <textarea id="allergies" name="allergies" rows="2" placeholder="List any drug allergies or food allergies..."></textarea>
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="form-section">
+            <h3>📞 Contact Information</h3>
+            <div class="form-group">
+              <label for="contactName">Full Name</label>
+              <input type="text" id="contactName" name="contactName" placeholder="Your full name">
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Phone Number</label>
+              <input type="tel" id="contactPhone" name="contactPhone" placeholder="10-digit phone number" pattern="^[0-9]{10}$">
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Email</label>
+              <input type="email" id="contactEmail" name="contactEmail" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="form-section">
+            <h3>ℹ️ Additional Information</h3>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="pregnant" name="pregnant" value="true">
+                <label for="pregnant">Currently pregnant or breastfeeding</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="smoking" name="smoking" value="true">
+                <label for="smoking">Current smoker</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="alcohol" name="alcohol" value="true">
+                <label for="alcohol">Regular alcohol consumption</label>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            🔍 Get AI Recommendations
+          </button>
+        </form>
+      </div>
+
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Analyzing your symptoms and generating personalized recommendations...</p>
+      </div>
+
+      <div class="recommendations-container" id="recommendationsContainer">
+        <!-- Recommendations will be populated here by JavaScript -->
+      </div>
+
+
+    </div>
+  </section>
+
+  <aside id="cartPanel" class="hidden">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <p id="totalPrice">Total: ₹0.00</p>
+    <button onclick="checkout()">Checkout</button>
+  </aside>
+
+  <!-- Contact Submission Success Modal -->
+  <div id="contactSuccessModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:10px; padding:20px; width: 90%; max-width: 420px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center;">
+      <h3 style="margin-top:0;">Thanks! We received your info</h3>
+      <p>Our team will review your symptoms and reach out to you shortly.</p>
+      <button id="closeContactSuccess" style="margin-top:10px; padding:10px 16px; background:#2563eb; color:#fff; border:none; border-radius:8px; cursor:pointer;">OK</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Aditya Medical & General Store | All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="cart.js"></script>
+  <script src="ai-recommendations.js"></script>
+  <script src="jarvis-medicine-database.js"></script>
+  <script src="jarvis-chatbot.js"></script>
+  <script>
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+    window.addEventListener('scroll', () => {
+      document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+// Initialize fallback AI engine for offline/client-side recommendations
+const fallbackAiEngine = (typeof MedicineRecommendationEngine !== 'undefined') ? new MedicineRecommendationEngine() : null;
+
+// Form submission handler
+document.getElementById('symptomAssessmentForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Validate basic fields
+  if (typeof validateForm === 'function') {
+    const ok = validateForm();
+    if (!ok) return;
+  }
+  
+  // Show loading spinner
+  document.getElementById('loadingSpinner').style.display = 'block';
+  document.getElementById('recommendationsContainer').style.display = 'none';
+  document.getElementById('submitBtn').disabled = true;
+  
+  // Collect form data
+  const formData = collectFormData();
+
+  try {
+    const resp = await fetch(window.getApiUrl ? window.getApiUrl('/api/consult') : '/api/consult', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symptoms: formData.symptoms, disease: null, profile: formData })
+    });
+
+    let data = null;
+    try {
+      data = await resp.json();
+    } catch (parseErr) {
+      console.error('Failed to parse JSON from /api/consult', parseErr);
+    }
+
+    if (!resp.ok) {
+      const msg = (data && (data.message || data.error)) || `Server error ${resp.status}`;
+      throw new Error(msg);
+    }
+
+    const recommendations = (data && data.results) || [];
+
+    // Display recommendations
+    displayRecommendations(recommendations);
+  } catch (err) {
+    console.error('Consult error', err);
+
+    // Fallback: use local AI engine if available
+    try {
+      if (fallbackAiEngine) {
+        const recs = fallbackAiEngine.assessPatient(formData);
+        displayRecommendations(recs);
+
+        // Contact popup if provided
+        const form = document.getElementById('symptomAssessmentForm');
+        const hasContact = (form.contactName.value.trim() || form.contactPhone.value.trim() || form.contactEmail.value.trim());
+        if (hasContact) {
+          const modal = document.getElementById('contactSuccessModal');
+          if (modal) {
+            modal.style.display = 'flex';
+            const btn = document.getElementById('closeContactSuccess');
+            if (btn) btn.onclick = () => { modal.style.display = 'none'; };
+          }
+        }
+      } else {
+        alert('Failed to fetch recommendations. Please try again.');
+      }
+    } catch (fallbackErr) {
+      console.error('Fallback AI error:', fallbackErr);
+      alert('Failed to fetch recommendations. Please try again.');
+    }
+  } finally {
+    // Hide loading spinner
+    document.getElementById('loadingSpinner').style.display = 'none';
+    document.getElementById('recommendationsContainer').style.display = 'block';
+    document.getElementById('submitBtn').disabled = false;
+    // Scroll to recommendations
+    const container = document.getElementById('recommendationsContainer');
+    if (container) container.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// Add global disclaimer under header
+(function addDisclaimer(){
+  const header = document.querySelector('.ai-header');
+  if (header && !document.getElementById('ai-disclaimer')) {
+    const d = document.createElement('div');
+    d.id = 'ai-disclaimer';
+    d.style.cssText = 'margin-top:12px;color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;padding:8px;border-radius:6px;font-weight:600;';
+    d.textContent = 'This is AI-generated advice. Please consult a doctor before using any medicine.';
+    header.appendChild(d);
+  }
+})();
+
+    // Collect form data
+    function collectFormData() {
+      const form = document.getElementById('symptomAssessmentForm');
+      const formData = new FormData(form);
+      
+      // Basic info
+      const patientData = {
+        age: parseInt(formData.get('age')) || 25,
+        weight: parseInt(formData.get('weight')) || 70,
+        gender: formData.get('gender') || 'male',
+        symptoms: [],
+        medicalHistory: [],
+        currentMedications: [],
+        allergies: [],
+        pregnancyStatus: formData.get('pregnant') === 'true',
+        smokingStatus: formData.get('smoking') === 'true',
+        alcoholConsumption: formData.get('alcohol') === 'true'
+      };
+      
+      // Collect symptoms
+      const symptomCheckboxes = document.querySelectorAll('input[name="symptoms"]:checked');
+      symptomCheckboxes.forEach(cb => {
+        patientData.symptoms.push(cb.value);
+      });
+      
+      // Add other symptoms
+      const otherSymptoms = formData.get('otherSymptoms');
+      if (otherSymptoms) {
+        patientData.symptoms.push(otherSymptoms);
+      }
+      
+      // Collect medical history
+      const medicalCheckboxes = document.querySelectorAll('input[name="medicalHistory"]:checked');
+      medicalCheckboxes.forEach(cb => {
+        patientData.medicalHistory.push(cb.value);
+      });
+      
+      // Current medications
+      const currentMeds = formData.get('currentMedications');
+      if (currentMeds) {
+        patientData.currentMedications = currentMeds.split(',').map(med => med.trim());
+      }
+      
+      // Allergies
+      const allergies = formData.get('allergies');
+      if (allergies) {
+        patientData.allergies = allergies.split(',').map(allergy => allergy.trim());
+      }
+      
+      return patientData;
+    }
+
+    // Display recommendations
+    function displayRecommendations(recommendations) {
+      const container = document.getElementById('recommendationsContainer');
+      container.innerHTML = '';
+      
+      if (recommendations.length === 0) {
+        container.innerHTML = `
+          <div class="recommendation-card">
+            <h2>No Specific Recommendations Found</h2>
+            <p>Based on your symptoms, we couldn't find specific medicine recommendations. This could be due to:</p>
+            <ul>
+              <li>Symptoms that require professional medical diagnosis</li>
+              <li>Complex conditions that need comprehensive evaluation</li>
+              <li>Safety concerns that require doctor consultation</li>
+            </ul>
+            <p><strong>We recommend consulting with a healthcare professional for proper diagnosis and treatment.</strong></p>
+          </div>
+        `;
+        return;
+      }
+      
+      recommendations.forEach((recommendation, index) => {
+        const recommendationCard = createRecommendationCard(recommendation, index);
+        container.appendChild(recommendationCard);
+      });
+    }
+
+    // Create recommendation card
+    function createRecommendationCard(recommendation, index) {
+      const card = document.createElement('div');
+      card.className = 'recommendation-card';
+      
+      card.innerHTML = `
+        <h2>${recommendation.disease} 
+          <span class="confidence-badge">${recommendation.confidence}% match</span>
+        </h2>
+        
+        <div class="medicines-grid">
+          ${recommendation.medicines.map(medicine => `
+            <div class="medicine-card">
+              <div class="medicine-name">${medicine.name}</div>
+              <div class="medicine-price">₹${medicine.price}</div>
+              <div class="medicine-details">
+                <p><strong>Dosage:</strong> ${medicine.dosage}</p>
+                <p><strong>Duration:</strong> ${medicine.duration}</p>
+                <p><strong>Type:</strong> ${medicine.type}</p>
+                ${medicine.sideEffects && medicine.sideEffects.length > 0 ? 
+                  `<p><strong>Common side effects:</strong> ${medicine.sideEffects.join(', ')}</p>` : ''}
+              </div>
+              ${medicine.prescription ? 
+                '<div class="prescription-required">⚠️ Prescription Required</div>' : ''}
+              <button class="add-to-cart-btn" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                🛒 Add to Cart
+              </button>
+            </div>
+          `).join('')}
+        </div>
+        
+        ${recommendation.warnings.length > 0 ? `
+          <div class="warnings-section">
+            <h4>⚠️ Important Warnings</h4>
+            ${recommendation.warnings.map(warning => `
+              <div class="warning-item">${warning}</div>
+            `).join('')}
+          </div>
+        ` : ''}
+        
+        <div class="disclaimer-section">
+          <h4>📋 Medical Disclaimer</h4>
+          <div class="disclaimer-text">${recommendation.disclaimer}</div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Book consultation
+    function bookConsultation() {
+      alert('Consultation booking feature coming soon! Please call +91-7588662926 to book an appointment.');
+    }
+
+    // Add to cart function (integrate with existing cart system)
+    function addToCart(name, price) {
+      // This should integrate with your existing cart system
+      if (typeof window.addToCart === 'function') {
+        window.addToCart(name, price);
+      } else {
+        alert(`${name} added to cart!`);
+        // You can implement your cart logic here
+      }
+    }
+
+    // Smooth scrolling for form sections
+    document.querySelectorAll('.form-section h3').forEach(header => {
+      header.style.cursor = 'pointer';
+      header.addEventListener('click', function() {
+        this.parentElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
+    });
+
+    // Form validation
+    function validateForm() {
+      const age = document.getElementById('age').value;
+      const gender = document.getElementById('gender').value;
+      const symptoms = document.querySelectorAll('input[name="symptoms"]:checked');
+      
+      if (!age || !gender) {
+        alert('Please fill in your age and gender.');
+        return false;
+      }
+      
+      if (symptoms.length === 0 && !document.getElementById('otherSymptoms').value.trim()) {
+        alert('Please select at least one symptom or describe your symptoms.');
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Add form validation to submit event
+    document.getElementById('symptomAssessmentForm').addEventListener('submit', function(e) {
+      if (!validateForm()) {
+        e.preventDefault();
+        return false;
+      }
+    });
+  </script>
+</body>
+</html>

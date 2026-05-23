@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login – Aditya Medical</title>
+  <!-- No index for search engines -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      width: 100%; max-width: 420px;
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    }
+
+    .shield { font-size: 3.5rem; margin-bottom: 1.2rem; }
+
+    h1 { font-size: 1.8rem; font-weight: 800; color: #f8fafc; margin-bottom: .3rem; }
+    .sub { color: #94a3b8; font-size: .9rem; margin-bottom: 2rem; }
+
+    .form-group { margin-bottom: 1.2rem; text-align: left; }
+    .form-group label { display: block; font-weight: 600; color: #cbd5e1; font-size: .88rem; margin-bottom: .4rem; }
+    .form-group input {
+      width: 100%; padding: .9rem 1.1rem;
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.15);
+      border-radius: 12px; color: #f8fafc;
+      font-size: 1rem; font-family: inherit;
+      transition: all .25s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.2);
+      background: rgba(255,255,255,.12);
+    }
+    .form-group input::placeholder { color: #64748b; }
+
+    .btn {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(135deg,#3b82f6,#1d4ed8);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: all .3s; box-shadow: 0 4px 18px rgba(59,130,246,.4);
+      margin-top: .4rem;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,130,246,.5); }
+
+    .error-msg {
+      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.4);
+      color: #fca5a5; border-radius: 10px; padding: .75rem 1rem;
+      font-size: .9rem; margin-bottom: 1.2rem; display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .footer-note { color: #475569; font-size: .78rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="shield">🔒</div>
+    <h1>Admin Access</h1>
+    <p class="sub">Restricted area · Aditya Medical</p>
+
+    <div class="error-msg" id="errMsg">❌ Incorrect password. Please try again.</div>
+    
+    <div class="error-msg" id="debugMsg" style="font-size: 0.75rem; color: #94a3b8; background: rgba(148,162,180,.1); border-color: rgba(148,162,180,.3);"></div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="adminPass">Admin Password</label>
+        <input type="password" id="adminPass" placeholder="Enter admin password" autofocus />
+      </div>
+      <button type="submit" class="btn" id="loginBtn">🔓 Login to Dashboard</button>
+    </form>
+
+    <p class="footer-note">This page is for authorized personnel only. Access is logged.</p>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // ─── Admin Login with Backend API ───
+    const ADMIN_TOKEN_KEY = 'am_admin_auth';
+    
+    // Try to get API URL from auth.js or use default
+    const getApiUrl = window.getApiUrl || ((path) => {
+      const base = window.location.origin;
+      return base + (path.startsWith('/') ? path : '/' + path);
+    });
+
+    document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPass').value;
+      const err  = document.getElementById('errMsg');
+      const debugMsg = document.getElementById('debugMsg');
+      const loginBtn = document.getElementById('loginBtn');
+      const originalBtnText = loginBtn.innerHTML;
+
+      // Debug info
+      debugMsg.textContent = `Attempting login... Backend URL: ${typeof getApiUrl === 'function' ? getApiUrl('/api/auth/admin/login') : 'N/A'}`;
+      debugMsg.style.display = 'block';
+
+      try {
+        // Disable button during request
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '⏳ Verifying...';
+        
+        console.log('🔐 Admin Login Attempt');
+        console.log('Password length:', pass.length);
+        console.log('SessionStorage available:', !!window.sessionStorage);
+        
+        // Try backend authentication first
+        try {
+          const apiUrl = getApiUrl('/api/auth/admin/login');
+          console.log('API URL:', apiUrl);
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pass })
+          });
+          
+          console.log('Backend response status:', response.status);
+          const data = await response.json();
+          console.log('Backend response data:', data);
+          
+          if (response.ok && data.success) {
+            // Store token in sessionStorage
+            sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+            
+            // Verify it was stored
+            const stored = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+            if (!stored) {
+              throw new Error('Failed to store session token. Please check your browser settings.');
+            }
+            
+            console.log('✅ Backend auth successful, token stored');
+            debugMsg.textContent = '✓ Backend authentication successful!';
+            
+            // Show success message
+            loginBtn.innerHTML = '✓ Success! Redirecting...';
+            loginBtn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+            
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 800);
+            return;
+          } else {
+            // Backend authentication failed
+            throw new Error(data.message || 'Invalid password');
+          }
+        } catch (backendError) {
+          // If backend is not available, fallback to client-side check
+          console.warn('Backend auth failed, using fallback:', backendError.message);
+          debugMsg.textContent = '⚠ Using offline mode (backend unavailable)';
+          
+          // Fallback: simple client-side check (for offline/development)
+          const FALLBACK_ADMIN_PASSWORD = 'admin@123';
+          
+          if (pass === FALLBACK_ADMIN_PASSWORD) {
+            const token = btoa(Date.now().toString());
+            sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+            
+            const stored = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+            if (!stored) {
+              throw new Error('Failed to store session token.');
+            }
+            
+            console.log('✅ Offline auth successful, token stored');
+            debugMsg.textContent = '✓ Offline authentication successful!';
+            
+            loginBtn.innerHTML = '✓ Success! Redirecting...';
+            loginBtn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+            
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 800);
+            return;
+          } else {
+            throw new Error('Incorrect password. Please try again.');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Login error:', error);
+        
+        // Show error message
+        err.textContent = '❌ ' + error.message;
+        err.classList.add('show');
+        document.getElementById('adminPass').value = '';
+        debugMsg.textContent = 'Error: ' + error.message;
+        
+        // Reset button
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = originalBtnText;
+        loginBtn.style.background = 'linear-gradient(135deg,#3b82f6,#1d4ed8)';
+        
+        setTimeout(() => err.classList.remove('show'), 3500);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,584 @@
+/* Medicine Recommendation Styles */
+.medicine-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.medicine-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.medicine-card.unavailable {
+  opacity: 0.7;
+  background: #f9fafb;
+}
+
+.medicine-card.unavailable:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Medicine Header */
+.medicine-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.medicine-title {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.medicine-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.brand-name {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  font-style: italic;
+}
+
+.medicine-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.prescription-badge,
+.otc-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.prescription-badge {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.otc-badge {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.availability-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.availability-status.in-stock {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.availability-status.out-of-stock {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Medicine Info */
+.medicine-info {
+  margin-bottom: 12px;
+}
+
+.dosage-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dosage-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dosage-item strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.dosage-item span {
+  font-size: 13px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.current-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #059669;
+}
+
+.original-price {
+  font-size: 13px;
+  color: #9ca3af;
+  text-decoration: line-through;
+  margin-left: 4px;
+}
+
+.savings {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 600;
+  background: #fee2e2;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* Precautions Section */
+.precautions-section {
+  background: #fef7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.precautions-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ea580c;
+  margin-bottom: 6px;
+}
+
+.precautions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.precautions-list li {
+  font-size: 11px;
+  color: #9a3412;
+  margin-bottom: 3px;
+  position: relative;
+  padding-left: 12px;
+}
+
+.precautions-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #ea580c;
+  font-weight: bold;
+}
+
+.more-precautions {
+  font-style: italic;
+  color: #92400e !important;
+}
+
+/* Medicine Actions */
+.medicine-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.details-button {
+  flex: 1;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.details-button:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.add-to-cart-button {
+  flex: 1.5;
+  background: #059669;
+  border: 1px solid #059669;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.add-to-cart-button:hover:not(:disabled) {
+  background: #047857;
+  border-color: #047857;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.add-to-cart-button:disabled {
+  background: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.add-to-cart-button.added {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.add-to-cart-button.adding {
+  background: #6b7280;
+  border-color: #6b7280;
+}
+
+/* Spinner animation */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Medicine Details */
+.medicine-details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-item strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.detail-item span {
+  font-size: 12px;
+  color: #374151;
+}
+
+.indications-section,
+.side-effects-section,
+.contraindications-section {
+  margin-bottom: 12px;
+}
+
+.indications-section h6,
+.side-effects-section h6,
+.contraindications-section h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 6px 0;
+}
+
+.contraindications-section h6.warning {
+  color: #dc2626;
+}
+
+.indications-section ul,
+.side-effects-section ul,
+.contraindications-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.indications-section li,
+.side-effects-section li,
+.contraindications-section li {
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  position: relative;
+  padding-left: 12px;
+}
+
+.indications-section li::before,
+.side-effects-section li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #059669;
+  font-weight: bold;
+}
+
+.contraindications-section li::before {
+  content: '⚠';
+  position: absolute;
+  left: 0;
+  font-size: 10px;
+}
+
+.food-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+}
+
+.food-instructions strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0c4a6e;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.food-instructions span {
+  font-size: 12px;
+  color: #075985;
+}
+
+.medicine-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 10px;
+  color: #92400e;
+}
+
+.medicine-disclaimer span {
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .medicine-card {
+    padding: 12px;
+  }
+
+  .medicine-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .medicine-badges {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .dosage-info {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .medicine-actions {
+    flex-direction: column;
+  }
+
+  .add-to-cart-button,
+  .details-button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 320px) {
+  .medicine-name {
+    font-size: 14px;
+  }
+
+  .brand-name {
+    font-size: 12px;
+  }
+
+  .current-price {
+    font-size: 14px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .medicine-card {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .medicine-card.unavailable {
+    background: #1f2937;
+  }
+
+  .medicine-name {
+    color: #f9fafb;
+  }
+
+  .brand-name {
+    color: #9ca3af;
+  }
+
+  .dosage-item strong {
+    color: #9ca3af;
+  }
+
+  .dosage-item span {
+    color: #f3f4f6;
+  }
+
+  .details-button {
+    background: #4b5563;
+    border-color: #6b7280;
+    color: #f3f4f6;
+  }
+
+  .details-button:hover {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .medicine-details {
+    border-color: #4b5563;
+  }
+
+  .detail-item strong {
+    color: #9ca3af;
+  }
+
+  .detail-item span {
+    color: #e5e7eb;
+  }
+
+  .indications-section h6,
+  .side-effects-section h6,
+  .contraindications-section h6 {
+    color: #f3f4f6;
+  }
+
+  .indications-section li,
+  .side-effects-section li,
+  .contraindications-section li {
+    color: #d1d5db;
+  }
+
+  .food-instructions {
+    background: #1e3a8a;
+    border-color: #3b82f6;
+  }
+
+  .food-instructions strong {
+    color: #bfdbfe;
+  }
+
+  .food-instructions span {
+    color: #dbeafe;
+  }
+}
+
+/* Focus styles for accessibility */
+.details-button:focus,
+.add-to-cart-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

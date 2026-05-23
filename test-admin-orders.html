@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Orders Test - Aditya Medical</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 { color: #1e293b; }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #2563eb; }
+    .result {
+      background: #f0f0f0;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: #22c55e; font-weight: bold; }
+    .error { color: #ef4444; font-weight: bold; }
+    .info { color: #3b82f6; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #f8fafc; }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-accepted { background: #dbeafe; color: #1e40af; }
+    .badge-delivered { background: #d1fae5; color: #065f46; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Admin Orders Connection Test</h1>
+  
+  <div class="test-section">
+    <h2>Test 1: Server Health Check</h2>
+    <button onclick="testServerHealth()">Test Server Connection</button>
+    <div id="result1" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 2: Admin Login</h2>
+    <input type="password" id="adminPassword" placeholder="Enter admin password" value="admin@123" style="padding: 8px; margin: 5px;">
+    <button onclick="testAdminLogin()">Login as Admin</button>
+    <div id="result2" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 3: Fetch Orders</h2>
+    <button onclick="fetchOrders()">Get All Orders</button>
+    <button onclick="filterOrders('pending')">Pending Only</button>
+    <button onclick="filterOrders('accepted')">Accepted Only</button>
+    <button onclick="filterOrders('delivered')">Delivered Only</button>
+    <div id="result3" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 4: Update Order Status</h2>
+    <div id="ordersList"></div>
+    <div id="result4" class="result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Quick Links</h2>
+    <a href="admin-login.html" target="_blank"><button>Open Admin Login</button></a>
+    <a href="admin.html" target="_blank"><button>Open Admin Dashboard</button></a>
+    <a href="http://localhost:3000" target="_blank"><button>Main Site</button></a>
+  </div>
+
+  <script>
+    let authToken = null;
+    
+    async function testServerHealth() {
+      const result = document.getElementById('result1');
+      result.innerHTML = '<span class="info">Testing server connection...</span>';
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/health', { 
+          method: 'GET'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          result.innerHTML = `<span class="success">✓ Server is running!\n\nResponse:\n${JSON.stringify(data, null, 2)}</span>`;
+        } else {
+          result.innerHTML = `<span class="error">✗ Server returned status ${response.status}</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Cannot connect to server: ${error.message}\n\nMake sure the server is running on http://localhost:3000</span>`;
+      }
+    }
+    
+    async function testAdminLogin() {
+      const password = document.getElementById('adminPassword').value;
+      const result = document.getElementById('result2');
+      result.innerHTML = '<span class="info">Attempting login...</span>';
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          authToken = data.token;
+          sessionStorage.setItem('am_admin_auth', authToken);
+          result.innerHTML = `<span class="success">✓ Login successful!\n\nToken: ${data.token}\nMessage: ${data.message}\n\nToken saved to sessionStorage.</span>`;
+        } else {
+          result.innerHTML = `<span class="error">✗ Login failed: ${data.message}</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Login error: ${error.message}</span>`;
+      }
+    }
+    
+    async function fetchOrders(status = 'all') {
+      const result = document.getElementById('result3');
+      result.innerHTML = '<span class="info">Fetching orders...</span>';
+      
+      try {
+        const token = authToken || sessionStorage.getItem('am_admin_auth');
+        if (!token) {
+          result.innerHTML = '<span class="error">✗ Not authenticated. Please login first.</span>';
+          return;
+        }
+        
+        const url = status === 'all' 
+          ? 'http://localhost:3000/api/orders'
+          : `http://localhost:3000/api/orders?status=${status}`;
+        
+        const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to fetch orders');
+        }
+        
+        const orders = data.data || [];
+        
+        if (orders.length === 0) {
+          result.innerHTML = '<span class="info">No orders found.</span>';
+          return;
+        }
+        
+        // Display orders in table format
+        let html = `<table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Medicines</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        
+        orders.forEach((order, index) => {
+          html += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${order.customerName || order.name || 'N/A'}</td>
+              <td>${order.phone || order.customerPhone || 'N/A'}</td>
+              <td>${order.medicinesText || (order.items?.map(i => i.medicineName).join(', ') || 'N/A')}</td>
+              <td><span class="badge badge-${order.status.toLowerCase()}">${order.status}</span></td>
+              <td>
+                ${order.status.toLowerCase() === 'pending' 
+                  ? `<button onclick="updateOrderStatus('${order._id || order.id}', 'accepted')">Accept</button>`
+                  : ''}
+                ${order.status.toLowerCase() === 'accepted'
+                  ? `<button onclick="updateOrderStatus('${order._id || order.id}', 'delivered')">Deliver</button>`
+                  : ''}
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        
+        result.innerHTML = `<span class="success">✓ Found ${orders.length} order(s)</span>\n${html}`;
+        
+        // Store orders for update test
+        window.testOrders = orders;
+        
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+      }
+    }
+    
+    async function filterOrders(status) {
+      await fetchOrders(status);
+    }
+    
+    async function updateOrderStatus(orderId, newStatus) {
+      const result = document.getElementById('result4');
+      result.innerHTML = `<span class="info">Updating order ${orderId} to ${newStatus}...</span>`;
+      
+      try {
+        const token = authToken || sessionStorage.getItem('am_admin_auth');
+        if (!token) {
+          throw new Error('Not authenticated');
+        }
+        
+        const response = await fetch(`http://localhost:3000/api/orders/${orderId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to update order');
+        }
+        
+        result.innerHTML = `<span class="success">✓ Order updated successfully!\n\n${JSON.stringify(data, null, 2)}</span>`;
+        
+        // Refresh orders list
+        setTimeout(() => fetchOrders(), 1000);
+        
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Update failed: ${error.message}</span>`;
+      }
+    }
+    
+    // Auto-test server health on load
+    window.addEventListener('load', () => {
+      console.log('🧪 Admin Orders Test Page Loaded');
+      testServerHealth();
+    });
+  </script>
+</body>
+</html>

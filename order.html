@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Place Order – Aditya Medical & General Store</title>
+  <meta name="description" content="Order medicines online from Aditya Medical & General Store in Jalgaon. Fast, trusted delivery." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <style>
+    /* ── Page-specific styles ── */
+    .order-hero {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 60%, #15803d 100%);
+      color: #fff;
+      padding: 3.5rem 0 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .order-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .order-hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: .6rem; }
+    .order-hero p  { font-size: 1.1rem; opacity: .9; }
+
+    .order-section { padding: 3rem 0 5rem; }
+
+    .order-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(34,197,94,.15);
+      padding: 2.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+      border: 1px solid #d1fae5;
+    }
+
+    .order-card h2 {
+      font-size: 1.6rem; font-weight: 700; color: #15803d;
+      margin-bottom: 1.8rem; display: flex; align-items: center; gap: .6rem;
+    }
+
+    .form-group { margin-bottom: 1.4rem; }
+    .form-group label {
+      display: block; font-weight: 600; color: #1e293b;
+      margin-bottom: .5rem; font-size: .95rem;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: .9rem 1.2rem;
+      border: 2px solid #e2e8f0; border-radius: 12px;
+      font-size: 1rem; font-family: inherit; color: #1e293b;
+      background: #f8fafc; transition: all .25s;
+      resize: vertical;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none; border-color: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,.12);
+      background: #fff;
+    }
+    .form-group textarea { min-height: 130px; }
+
+    .order-note {
+      background: #f0fdf4; border: 1px dashed #86efac;
+      border-radius: 10px; padding: 1rem 1.2rem;
+      font-size: .9rem; color: #15803d; margin-bottom: 1.8rem;
+    }
+
+    .btn-order {
+      width: 100%; padding: 1.1rem;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer;
+      transition: all .3s; box-shadow: 0 4px 18px rgba(34,197,94,.35);
+      display: flex; align-items: center; justify-content: center; gap: .6rem;
+    }
+    .btn-order:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(34,197,94,.45); }
+    .btn-order:active { transform: translateY(0); }
+    .btn-order:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #1e293b; color: #fff;
+      padding: 1rem 2rem; border-radius: 50px;
+      font-weight: 600; font-size: 1rem; z-index: 9999;
+      opacity: 0; transition: all .4s; pointer-events: none;
+      display: flex; align-items: center; gap: .6rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.25);
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    #toast.error   { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+    /* ── Sticky bottom bar (mobile) ── */
+    .sticky-bar {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 1px solid #e2e8f0;
+      padding: .75rem 1rem; z-index: 500;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    }
+    .sticky-bar-inner { display: flex; gap: .6rem; max-width: 480px; margin: 0 auto; }
+    .sticky-bar a, .sticky-bar button {
+      flex: 1; padding: .75rem .5rem; border-radius: 10px;
+      border: none; font-weight: 700; font-size: .85rem;
+      cursor: pointer; text-align: center; text-decoration: none;
+      transition: all .2s;
+    }
+    .sb-order { background: #22c55e; color: #fff; }
+    .sb-call  { background: #3b82f6; color: #fff; }
+    .sb-wa    { background: #25D366; color: #fff; }
+    @media(max-width:768px){ .sticky-bar{ display: block; } }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <!-- Hero -->
+  <section class="order-hero">
+    <div class="container" style="position:relative;z-index:2">
+      <h1>🛒 Place Your Order</h1>
+      <p>Enter your details and we'll deliver your medicines quickly</p>
+    </div>
+  </section>
+
+  <!-- Order Form -->
+  <section class="order-section">
+    <div class="container">
+      <div class="order-card">
+        <h2>💊 Medicine Order Form</h2>
+
+        <div class="order-note">
+          📞 After submitting, our team will call you to confirm the order and arrange delivery.
+        </div>
+
+        <form id="orderForm" novalidate>
+          <!-- Hidden email field - auto-populated from session -->
+          <input type="hidden" id="ord-email" />
+
+          <div class="form-group">
+            <label for="ord-name">Your Full Name *</label>
+            <input type="text" id="ord-name" placeholder="e.g. Rajesh Sharma" required />
+          </div>
+
+          <div class="form-group">
+            <label for="ord-phone">Mobile Number *</label>
+            <input type="tel" id="ord-phone" placeholder="e.g. 9876543210" maxlength="10" required />
+          </div>
+
+          <div class="form-group">
+            <label for="ord-medicines">Medicines / Items Needed *</label>
+            <textarea id="ord-medicines" placeholder="List the medicines, quantity, or any details...&#10;e.g.&#10;- Paracetamol 500mg × 2&#10;- Vitamin C 1000mg × 1" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-order" id="submitBtn">
+            <span>📦</span> Place Order
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast notification -->
+  <div id="toast"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Aditya Medical &amp; General Store</h4>
+          <p>Your trusted healthcare partner in Jalgaon</p>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Info</h4>
+          <p>📞 +91-7588662926</p>
+          <p>📧 adityamedical@gmail.com</p>
+        </div>
+        <div class="footer-section">
+          <h4>Business Hours</h4>
+          <p>🕒 Mon-Sun: 8:00 AM – 10:00 PM</p>
+          <p>📍 Near XYZ Hospital, Jalgaon</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aditya Medical &amp; General Store | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky bottom bar -->
+  <div class="sticky-bar">
+    <div class="sticky-bar-inner">
+      <a href="order.html" class="sb-order">🛒 Order</a>
+      <a href="tel:+917588662926" class="sb-call">📞 Call</a>
+      <a href="https://wa.me/917588662926" target="_blank" class="sb-wa">💬 WhatsApp</a>
+    </div>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    // ── Hamburger menu ──
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+    // Scroll-shrink
+    window.addEventListener('scroll', () => {
+      document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Toast helper ──
+    function showToast(msg, type = 'success', duration = 3500) {
+      const t = document.getElementById('toast');
+      t.textContent = type === 'success' ? '✅ ' + msg : '❌ ' + msg;
+      t.className = 'show ' + type;
+      setTimeout(() => { t.className = ''; }, duration);
+    }
+
+    // ── Form submit ──
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name      = document.getElementById('ord-name').value.trim();
+      const phone     = document.getElementById('ord-phone').value.trim();
+      const medicines = document.getElementById('ord-medicines').value.trim();
+      const email     = document.getElementById('ord-email').value.trim();
+
+      if (!name || !phone || !medicines) {
+        showToast('Please fill all fields.', 'error');
+        return;
+      }
+      if (!/^\d{10}$/.test(phone)) {
+        showToast('Enter a valid 10-digit mobile number.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Placing Order…';
+
+      try {
+        console.log('📦 Placing order via direct REST API...');
+        
+        const sbUrl = "https://rfcxhcucpzaplbprmbqm.supabase.co/rest/v1/orders";
+        const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmY3hoY3VjcHphcGxicHJtYnFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NzgxOTcsImV4cCI6MjA5MDM1NDE5N30.ppk-3ExeHqkw3IHYz6Rgarr4FqMoIZaWShHgY2PI_Ls";
+
+        // Build order payload — include email if available so dashboard can link orders to user
+        const orderPayload = {
+          name: name,
+          phone: phone,
+          medicines: medicines,
+          status: 'pending',
+          created_at: new Date().toISOString()
+        };
+        if (email) orderPayload.email = email;
+
+        const resp = await fetch(sbUrl, {
+          method: 'POST',
+          headers: {
+              'apikey': sbKey,
+              'Authorization': 'Bearer ' + sbKey,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(orderPayload)
+        });
+        
+        if (!resp.ok) {
+          const errData = await resp.text();
+          console.error('❌ Order insertion error:', errData);
+          throw new Error('Supabase responded with an error');
+        }
+        
+        console.log('✅ Order placed successfully');
+        showToast('Order placed successfully! We will call you shortly.', 'success', 5000);
+        document.getElementById('ord-medicines').value = '';
+        // Keep name/phone pre-filled for convenience
+      } catch (err) {
+        console.error('❌ Failed to place order:', err);
+        showToast('Failed to place order. Please try again or call us directly.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>📦</span> Place Order';
+      }
+    });
+
+    // ── Check Login Session & Pre-fill form ──
+    async function checkSess() {
+      const storedName  = localStorage.getItem('am_user_name');
+      const storedEmail = localStorage.getItem('am_user_email');
+      const vel = document.getElementById('userWelcome');
+
+      // Try to get email from active Supabase session (more reliable)
+      let sessionEmail = storedEmail || '';
+      try {
+        const sb = await getSupabase();
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user?.email) sessionEmail = session.user.email;
+      } catch(e) { /* offline / paused — use localStorage */ }
+
+      // Pre-fill hidden email field
+      if (sessionEmail) {
+        document.getElementById('ord-email').value = sessionEmail;
+      }
+
+      // Pre-fill name field
+      if (storedName) {
+        const nameInput = document.getElementById('ord-name');
+        if (!nameInput.value) nameInput.value = storedName;
+      }
+
+      if (storedName && vel) {
+        const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+        vel.innerHTML = `
+          <div class="user-welcome">
+            <div class="user-avatar">${firstChar}</div>
+            <span class="user-name-text">${storedName.split(' ')[0]}</span>
+          </div>
+        `;
+        vel.style.display = 'block';
+        
+        // Change Login link to Account
+        document.querySelectorAll('a[href="login.html"]').forEach(l => {
+          l.textContent = '👤 Account';
+          l.classList.remove('hn-ghost');
+        });
+      }
+    }
+    checkSess();
+  </script>
+</body>
+</html>

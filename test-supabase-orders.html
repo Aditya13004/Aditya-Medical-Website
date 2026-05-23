@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Orders Diagnostic - Aditya Medical</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #1e293b; }
+    .section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+    button:hover { background: #2563eb; }
+    .result { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 4px; font-family: monospace; font-size: 13px; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+    .success { color: #22c55e; font-weight: bold; }
+    .error { color: #ef4444; font-weight: bold; }
+    .info { color: #3b82f6; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; font-size: 12px; }
+    th { background: #f8fafc; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-accepted { background: #dbeafe; color: #1e40af; }
+    .badge-delivered { background: #d1fae5; color: #065f46; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Supabase Orders Diagnostic Tool</h1>
+  
+  <div class="section">
+    <h2>Step 1: Test Supabase Connection</h2>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result1" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2>Step 2: Check Orders Table</h2>
+    <button onclick="checkTable()">Check Table Structure</button>
+    <div id="result2" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2>Step 3: Fetch Existing Orders</h2>
+    <button onclick="fetchOrders()">Get All Orders</button>
+    <div id="result3" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2>Step 4: Add Test Order</h2>
+    <button onclick="addTestOrder()">Add Sample Order</button>
+    <div id="result4" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2>Quick Links</h2>
+    <a href="admin-login.html" target="_blank"><button>Admin Login</button></a>
+    <a href="admin.html" target="_blank"><button>Admin Dashboard</button></a>
+    <a href="order.html" target="_blank"><button>Customer Order Page</button></a>
+    <a href="http://localhost:3000" target="_blank"><button>Main Site</button></a>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    async function testConnection() {
+      const result = document.getElementById('result1');
+      result.innerHTML = '<span class="info">Testing Supabase connection...</span>';
+      
+      try {
+        const sb = await getSupabase();
+        
+        // Simple query to test connection
+        const { data, error } = await sb.from('orders').select('count', { count: 'exact', head: true });
+        
+        if (error) {
+          throw error;
+        }
+        
+        result.innerHTML = `<span class="success">✓ Supabase connection successful!\n\nYou can connect to the orders table.\nSupabase URL: https://rfcxhcucpzaplbprmbqm.supabase.co</span>`;
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Connection failed: ${error.message}\n\nPossible issues:\n1. Supabase project is down\n2. Invalid API keys\n3. Network connection issue\n4. Table doesn't exist</span>`;
+      }
+    }
+    
+    async function checkTable() {
+      const result = document.getElementById('result2');
+      result.innerHTML = '<span class="info">Checking table structure...</span>';
+      
+      try {
+        const sb = await getSupabase();
+        
+        // Try to get one record to see structure
+        const { data, error } = await sb.from('orders').select('*').limit(1);
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (data && data.length > 0) {
+          const columns = Object.keys(data[0]);
+          result.innerHTML = `<span class="success">✓ Table exists and has data!\n\nColumns found:\n${columns.join(', ')}\n\nSample record:\n${JSON.stringify(data[0], null, 2)}</span>`;
+        } else {
+          result.innerHTML = `<span class="info">⚠ Table exists but is empty.\n\nThe 'orders' table exists but has no records yet.\nClick "Add Sample Order" to add test data.</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Table check failed: ${error.message}\n\nThe orders table might not exist or you don't have permission to access it.</span>`;
+      }
+    }
+    
+    async function fetchOrders() {
+      const result = document.getElementById('result3');
+      result.innerHTML = '<span class="info">Fetching orders from Supabase...</span>';
+      
+      try {
+        const sb = await getSupabase();
+        const { data, error } = await sb
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (!data || data.length === 0) {
+          result.innerHTML = '<span class="info">No orders found in database.</span>';
+          return;
+        }
+        
+        let html = `<span class="success">✓ Found ${data.length} order(s)\n\n</span><table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Medicines</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        
+        data.forEach(order => {
+          html += `
+            <tr>
+              <td>${order.id}</td>
+              <td>${order.customer_name || order.name || 'N/A'}</td>
+              <td>${order.phone || 'N/A'}</td>
+              <td>${order.medicines || order.medicines_text || 'N/A'}</td>
+              <td><span class="badge badge-${(order.status || '').toLowerCase()}">${order.status}</span></td>
+              <td>${new Date(order.created_at).toLocaleString()}</td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        result.innerHTML = html;
+        
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Fetch failed: ${error.message}</span>`;
+      }
+    }
+    
+    async function addTestOrder() {
+      const result = document.getElementById('result4');
+      result.innerHTML = '<span class="info">Adding test order...</span>';
+      
+      try {
+        const sb = await getSupabase();
+        
+        const { data, error } = await sb.from('orders').insert([{
+          customer_name: 'Test Customer (Diagnostic)',
+          name: 'Test Customer',
+          phone: '+91 9999888877',
+          medicines: 'Dolo 650 (10 tabs), Vitamin C (30 tabs)',
+          status: 'pending',
+          created_at: new Date().toISOString()
+        }]).select();
+        
+        if (error) {
+          throw error;
+        }
+        
+        result.innerHTML = `<span class="success">✓ Test order added successfully!\n\nOrder ID: ${data[0].id}\nCustomer: ${data[0].customer_name || data[0].name}\nStatus: ${data[0].status}\n\nYou can now see this order in the Admin Dashboard!</span>`;
+        
+        // Auto-refresh the orders list
+        setTimeout(() => fetchOrders(), 1000);
+        
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ Failed to add order: ${error.message}\n\nPossible issues:\n1. Missing required fields\n2. RLS policy blocking inserts\n3. Database permissions</span>`;
+      }
+    }
+    
+    // Auto-test on load
+    window.addEventListener('load', () => {
+      console.log('🔍 Supabase Orders Diagnostic Loaded');
+      testConnection();
+    });
+  </script>
+</body>
+</html>

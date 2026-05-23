@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya Medical &amp; General Store — Fast Medicine Delivery in Jalgaon</title>
+  <meta name="description" content="Order medicines online from Aditya Medical & General Store in Jalgaon. Genuine medicines, expert pharmacist advice, and fast home delivery." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+      <header id="siteHeader">
+    <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo" id="logoClickAdmin">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store · Jalgaon</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">🤖 AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">📊 My Orders</a>
+        
+        <div class="hdr-nav-right">
+          <!-- Unified User Welcome (Top Right) -->
+          <div id="userWelcome" style="display:none; align-items:center; margin-right: 0.5rem;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link">👤 Login</a>
+          <a href="order.html" class="hn hn-cta nav-order">🛒 Order Now</a>
+        </div>
+        
+        <button id="cartToggle" class="hn-cart" title="View Cart">
+          🛒 <span id="cartCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">🏠 Home</a>
+      <a href="products.html" class="hd-link nav-products">💊 Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">🛒 Place Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">📋 Upload Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">🤖 AI Recommendations</a>
+      <a href="contact.html" class="hd-link nav-contact">📞 Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">📊 My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">👤 Login</a>
+    </div>
+
+    <script>
+      // Automatically keep the navbar state completely consistent across all pages
+      (function(){
+        // 1. Set Active Link
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || 'index.html';
+        const mapper = {
+          'index.html': 'nav-home',
+          'products.html': 'nav-products',
+          'prescription-upload.html': 'nav-prescription',
+          'ai-recommendations.html': 'nav-ai',
+          'contact.html': 'nav-contact',
+          'customer-dashboard.html': 'nav-orders',
+          'login.html': 'nav-login',
+          'order.html': 'nav-order'
+        };
+        const activeClass = mapper[page];
+        
+        // 2. Global Check Session
+        const storedName = localStorage.getItem('am_user_name');
+
+        setTimeout(() => {
+          // highlight active nav tab
+          if(activeClass) {
+            document.querySelectorAll('.' + activeClass).forEach(el => el.classList.add('active'));
+          }
+
+          // render logged-in state across all pages!
+          if (storedName) {
+            const vel = document.getElementById('userWelcome');
+            if (vel) {
+              const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+              vel.innerHTML = `
+                <div class="user-welcome">
+                  <div class="user-avatar">${firstChar}</div>
+                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
+                </div>
+              `;
+              vel.style.display = 'flex';
+              
+              const loginLinks = document.querySelectorAll('.login-link');
+              loginLinks.forEach(l => {
+                l.textContent = '👤 Account';
+                l.classList.remove('hn-ghost');
+                l.classList.add('hn-account');
+              });
+            }
+          }
+        }, 20);
+      })();
+    </script>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="home">
+    <!-- CONTINUOUSLY SCROLLING medicine background (never stops) -->
+    <div class="hero-bg-strip">
+      <div class="hero-bg-track">
+        <!-- The 4 remaining user-provided medicine images (no blue background ones) -->
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175002.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175029.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175068.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175397.jpg');"></div>
+        
+        <!-- Exact duplicates to perfectly loop the slider -->
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175002.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175029.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175068.jpg');"></div>
+        <div class="hero-bg-img" style="background-image: url('assets/hero_bg/media__1774902175397.jpg');"></div>
+      </div>
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+      <div class="hero-badge">🏥 Jalgaon's Most Trusted Medical Store</div>
+      <h1 class="hero-title">Fast &amp; Trusted<br/><span class="hero-title-accent">Medicine Delivery</span></h1>
+      <p class="hero-sub">Order genuine medicines online and get them delivered to your doorstep. Expert pharmacist advice, always available.</p>
+
+      <div class="hero-cta">
+        <a href="order.html" class="btn-hero btn-hero-green">🛒 Order Medicines</a>
+        <a href="prescription-upload.html" class="btn-hero btn-hero-white">📋 Upload Prescription</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-num">500+</span><span class="hstat-lbl">Happy Customers</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><span class="hstat-num">2000+</span><span class="hstat-lbl">Medicines Available</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><span class="hstat-num">8AM–10PM</span><span class="hstat-lbl">Open Daily</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ QUICK ACTIONS ══ -->
+  <section class="qa-section">
+    <div class="container">
+      <div class="qa-grid">
+        <a href="tel:+917588662926" class="qa-card qa-blue">
+          <div class="qa-icon-wrap">📞</div>
+          <div>
+            <div class="qa-title">Call Shop</div>
+            <div class="qa-sub">+91-7588662926</div>
+          </div>
+        </a>
+        <a href="https://wa.me/917588662926?text=Hello%2C%20I%20want%20to%20order%20medicines" target="_blank" class="qa-card qa-green">
+          <div class="qa-icon-wrap">💬</div>
+          <div>
+            <div class="qa-title">WhatsApp Order</div>
+            <div class="qa-sub">Chat &amp; order now</div>
+          </div>
+        </a>
+        <a href="https://maps.google.com/?q=Near+XYZ+Hospital+Jalgaon" target="_blank" class="qa-card qa-amber">
+          <div class="qa-icon-wrap">📍</div>
+          <div>
+            <div class="qa-title">View Location</div>
+            <div class="qa-sub">Near XYZ Hospital</div>
+          </div>
+        </a>
+        <a href="tel:+917588662926" class="qa-card qa-red">
+          <div class="qa-icon-wrap">🚨</div>
+          <div>
+            <div class="qa-title">Emergency</div>
+            <div class="qa-sub">Call us immediately</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SEARCH ══ -->
+  <section class="search-section">
+    <div class="container">
+      <div class="search-container">
+        <h2>Find Your Medicines &amp; Products</h2>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search for medicines, supplements, devices..." />
+          <button id="searchBtn">🔍 Search</button>
+        </div>
+        <div class="quick-links">
+          <span>Popular:</span>
+          <a href="products.html?search=paracetamol">Paracetamol</a>
+          <a href="products.html?search=vitamin">Vitamins</a>
+          <a href="products.html?search=thermometer">Thermometer</a>
+          <a href="products.html?search=sanitizer">Sanitizer</a>
+          <a href="products.html?search=antibiotics">Antibiotics</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FEATURES / WHY US ══ -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-label">Why Choose Us</div>
+      <h2 class="section-title">Everything You Need, One Place</h2>
+      <div class="features-grid-new">
+        <div class="feat-card">
+          <div class="feat-icon" style="background:#dcfce7;color:#16a34a">🚚</div>
+          <h3>Fast Home Delivery</h3>
+          <p>Get medicines delivered to your door quickly. Same-day delivery available for urgent orders.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:#dbeafe;color:#1d4ed8">💊</div>
+          <h3>100% Genuine Medicines</h3>
+          <p>All medicines sourced directly from authorized distributors. No fakes, no compromises.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:#fef3c7;color:#92400e">📋</div>
+          <h3>Easy Prescription Upload</h3>
+          <p>Upload your prescription and we'll prepare your order. Our pharmacist verifies everything.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:#f3e8ff;color:#7c3aed">🤖</div>
+          <h3>AI Medicine Help</h3>
+          <p>Get AI-powered medicine recommendations and drug interaction checks instantly.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="background:#d1fae5;color:#059669">💰</div>
+          <h3>Best Prices</h3>
+          <p>Competitive pricing on all medicines and healthcare products. Savings on every order.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OUR SERVICES ══ -->
+  <section class="services">
+    <div class="container">
+      <div class="section-label" style="color:rgba(255,255,255,.7)">Our Services</div>
+      <h2 style="text-align:center;color:#fff;margin-bottom:2.5rem;font-size:2rem;font-weight:800">What We Offer</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">💊</div>
+          <h3>Prescription Medicines</h3>
+          <p>Complete range of prescription drugs with proper guidance</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🏥</div>
+          <h3>Medical Devices</h3>
+          <p>Quality medical equipment and monitoring devices</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🧴</div>
+          <h3>Personal Care</h3>
+          <p>Hygiene and personal care products</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ AI FEATURES ══ -->
+  <section class="ai-features">
+    <div class="container">
+      <h2>🤖 AI-Powered Healthcare Services</h2>
+      <p style="text-align:center;color:#cbd5e1;font-size:1.05rem;margin-bottom:2.5rem">Experience the future of healthcare with our advanced AI-powered services.</p>
+      <div class="ai-features-grid">
+        <div class="ai-feature-card">
+          <div class="ai-feature-icon">🤖</div>
+          <h3>AI Medicine Recommendations</h3>
+          <p>Get personalized medicine suggestions based on your symptoms and health profile with dosage info.</p>
+          <a href="ai-recommendations.html" class="feature-btn">Try AI Recommendations</a>
+        </div>
+        <div class="ai-feature-card">
+          <div class="ai-feature-icon">📋</div>
+          <h3>Prescription Analysis</h3>
+          <p>Upload your prescription and get instant medicine availability, price estimates, and substitutes.</p>
+          <a href="prescription-upload.html" class="feature-btn">Upload Prescription</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ══ -->
+  <section class="about">
+    <div class="container">
+      <h2>About Aditya Medical &amp; General Store</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p><strong>Aditya Medical &amp; General Store</strong> is your one-stop destination for all healthcare and daily needs. Established in the heart of Jalgaon, we are committed to providing authentic medicines, wellness products, and personal care items at affordable prices.</p>
+          <p>Our experienced staff ensures you get the right advice and the best service, every time. We understand that health is wealth, and we're here to support your wellness journey with genuine products and expert guidance.</p>
+          <div class="features-grid">
+            <div class="feature-item">
+              <span class="feature-icon">💊</span>
+              <h4>Wide Range of Medicines</h4>
+              <p>Prescription and OTC medicines from trusted brands</p>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🏥</span>
+              <h4>Expert Guidance</h4>
+              <p>Professional advice from experienced pharmacists</p>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">💰</span>
+              <h4>Affordable Prices</h4>
+              <p>Best prices guaranteed on all products</p>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🚚</span>
+              <h4>Fast Delivery</h4>
+              <p>Quick and reliable delivery service</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Panel -->
+  <aside id="cartPanel" class="hidden">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <p id="totalPrice">Total: ₹0.00</p>
+    <button onclick="checkout()">Checkout</button>
+  </aside>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Aditya Medical &amp; General Store</h4>
+          <p>Your trusted healthcare partner in Jalgaon</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <p><a href="order.html" style="color:inherit">🛒 Place Order</a></p>
+          <p><a href="prescription-upload.html" style="color:inherit">📋 Upload Prescription</a></p>
+          <p><a href="ai-recommendations.html" style="color:inherit">🤖 AI Help</a></p>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Info</h4>
+          <p>📞 <a href="tel:+917588662926" style="color:inherit">+91-7588662926</a></p>
+          <p>📧 adityamedical@gmail.com</p>
+          <p>💬 <a href="https://wa.me/917588662926" style="color:inherit" target="_blank">WhatsApp Us</a></p>
+        </div>
+        <div class="footer-section">
+          <h4>Business Hours</h4>
+          <p>🕒 Mon-Sun: 8:00 AM – 10:00 PM</p>
+          <p>📍 Near XYZ Hospital, Jalgaon</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aditya Medical &amp; General Store | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ STICKY MOBILE BAR ══ -->
+  <div class="sticky-bar">
+    <div class="sticky-bar-inner">
+      <a href="order.html" class="sb-order">🛒 Order</a>
+      <a href="tel:+917588662926" class="sb-call">📞 Call</a>
+      <a href="https://wa.me/917588662926" target="_blank" class="sb-wa">💬 WhatsApp</a>
+    </div>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script src="auth.js"></script>
+  <script src="cart.js"></script>
+  <script src="script.js"></script>
+  <script src="jarvis-medicine-database.js"></script>
+  <script src="jarvis-chatbot.js"></script>
+  <script>
+    // ── Hamburger menu ──
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    // Close drawer on link click
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+
+    // ── Scroll-shrink header ──
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Search ──
+    document.getElementById('searchBtn').addEventListener('click', function() {
+      const t = document.getElementById('searchInput').value.trim();
+      if (t) window.location.href = `products.html?search=${encodeURIComponent(t)}`;
+    });
+    document.getElementById('searchInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') document.getElementById('searchBtn').click();
+    });
+
+    // ── Scroll animations ──
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feat-card, .service-card, .feature-item, .ai-feature-card').forEach(el => {
+      el.classList.add('animate-on-scroll');
+      observer.observe(el);
+    });
+
+    // ── Hidden admin shortcut (5 rapid clicks on logo) ──
+    let logoClicks = 0, logoTimer;
+    document.getElementById('logoClickAdmin').addEventListener('click', function(e) {
+      logoClicks++;
+      clearTimeout(logoTimer);
+      logoTimer = setTimeout(() => logoClicks = 0, 2000);
+      if (logoClicks >= 5) {
+        e.preventDefault();
+        logoClicks = 0;
+        window.location.href = 'admin-login.html';
+      }
+    });
+
+    // ── Check Login Session ──
+    async function checkSess() {
+      const storedName = localStorage.getItem('am_user_name');
+      const vel = document.getElementById('userWelcome');
+      if (storedName && vel) {
+        const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
+        vel.innerHTML = `
+          <div class="user-welcome">
+            <div class="user-avatar">${firstChar}</div>
+            <span class="user-name-text">${storedName.split(' ')[0]}</span>
+          </div>
+        `;
+        vel.style.display = 'block';
+        
+        // Hide Login if logged in
+        const loginLinks = document.querySelectorAll('a[href="login.html"]');
+        loginLinks.forEach(l => {
+          l.textContent = '👤 Account';
+          l.classList.remove('hn-ghost');
+          l.classList.add('hn-account');
+        });
+      }
+    }
+    checkSess();
+  </script>
+
+  <style>
+    /* AI features section */
+    .ai-features {
+      padding: 4rem 0;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+    }
+    .ai-features h2 { text-align:center; margin-bottom:1rem; font-size:2.2rem; color:white; }
+    .ai-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2rem; margin-top:1rem; }
+    .ai-feature-card { background:rgba(255,255,255,.08); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:2rem; text-align:center; transition:all .3s; }
+    .ai-feature-card:hover { transform:translateY(-8px); background:rgba(255,255,255,.13); box-shadow:0 20px 40px rgba(0,0,0,.3); }
+    .ai-feature-icon { font-size:3rem; margin-bottom:1rem; display:block; }
+    .ai-feature-card h3 { font-size:1.3rem; margin-bottom:.8rem; color:#f1f5f9; }
+    .ai-feature-card p { color:#cbd5e1; line-height:1.6; margin-bottom:1.5rem; font-size:.95rem; }
+    .feature-btn { display:inline-block; background:linear-gradient(135deg,#3b82f6,#1d4ed8); color:white; padding:.75rem 1.8rem; text-decoration:none; border-radius:8px; font-weight:600; transition:all .3s; font-size:.9rem; }
+    .feature-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(59,130,246,.4); }
+
+    /* User Name on Right container */
+    .hdr-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 1px solid rgba(255,255,255,0.15);
+    }
+  </style>
+</body>
+</html>
