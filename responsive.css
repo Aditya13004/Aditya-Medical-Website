@@ -2110,6 +2110,21 @@ html, body {
   display: none !important;
 }
 
+/* Reset body padding that was reserved for the sticky bar — since bar is hidden, no gap needed */
+body {
+  padding-bottom: 0 !important;
+}
+
+.site-footer {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.footer-bar {
+  margin-bottom: 0 !important;
+  padding-bottom: 1.5rem !important;
+}
+
 @media (max-width: 1024px) {
   /* Tablet - 2 products per row & tighter layout */
   .product-list {

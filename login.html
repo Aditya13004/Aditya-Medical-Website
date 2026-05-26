@@ -221,6 +221,15 @@
       display: flex; align-items: center; gap: 0.5rem;
       margin-left: 1rem; padding-left: 1rem; border-left: 1px solid rgba(255,255,255,0.15);
     }
+
+    /* Mobile fix: remove extra padding/border so hamburger stays aligned like all other pages */
+    @media (max-width: 900px) {
+      .hdr-nav-right {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -352,7 +361,7 @@
     </div>
   </main>
 
-  <div id="toast" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:0.8rem 1.8rem;border-radius:50px;font-weight:600;font-size:0.9rem;z-index:9999;opacity:0;transition:all 0.35s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.22);"></div>
+  <div id="toast" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:0.8rem 1.8rem;border-radius:50px;font-weight:600;font-size:0.9rem;z-index:9999;opacity:0;transition:all 0.35s;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90vw;width:max-content;display:block;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.22);"></div>
 
   <!-- Scripts -->
   <script src="supabase.js"></script>

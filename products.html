@@ -282,8 +282,31 @@
         </div>
       </div>
       
-      <div class="search-box" style="margin-bottom: 2rem; max-width: 400px; display: none;">
-        <input type="text" id="productSearch" placeholder="Search products..." style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); width: 100%;" />
+      <style>
+        /* Mobile & Tablet Search Box Responsiveness Fix */
+        @media (min-width: 1025px) {
+          .mobile-search-box {
+            display: none !important;
+          }
+        }
+        @media (max-width: 1024px) {
+          .mobile-search-box {
+            display: block !important;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 100%;
+          }
+          .mobile-search-box input {
+            padding: 1rem !important; /* Larger touch target for mobile/tablet */
+            font-size: 1rem !important;
+            touch-action: manipulation; /* Fix touch events and keyboard pop */
+            -webkit-appearance: none;
+            border-radius: 12px;
+          }
+        }
+      </style>
+      <div class="search-box mobile-search-box">
+        <input type="text" id="productSearch" placeholder="Search products (Medicine, Categories...)" style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); width: 100%;" />
       </div>
 
       <!-- The Grid -->
@@ -720,6 +743,22 @@
       list.innerHTML = "";
       
       const resultsCount = document.getElementById('results-count');
+      
+      if (items.length === 0) {
+        if (resultsCount) resultsCount.textContent = 'Showing 0 results';
+        list.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.8);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5" style="margin-bottom: 1rem;">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #0F172A; margin-bottom: 0.5rem;">No medicines found</h3>
+            <p style="color: #64748B;">We couldn't find any products matching your search. Please try a different term.</p>
+          </div>
+        `;
+        return;
+      }
+      
       if (resultsCount) resultsCount.textContent = `Showing 1-${items.length} of ${items.length} results`;
 
       items.forEach((product, idx) => {
@@ -853,13 +892,37 @@
 
     loadMedicines();
 
-    document.getElementById('productSearch').addEventListener('input', function (e) {
-      filterProducts();
-    });
+    // Setup Search Event Listeners
+    const navSearchInput = document.querySelector('.hdr-search-form input[name="q"]');
+    const oldSearchInput = document.getElementById('productSearch');
+    
+    let currentSearchTerm = "";
 
-    document.getElementById('sortSelect').addEventListener('change', function () {
+    function handleSearchInput(e) {
+      currentSearchTerm = e.target.value.toLowerCase().trim();
+      // Keep inputs exactly in sync so they both properly reset
+      if (navSearchInput && e.target !== navSearchInput) navSearchInput.value = e.target.value;
+      if (oldSearchInput && e.target !== oldSearchInput) oldSearchInput.value = e.target.value;
       filterProducts();
-    });
+    }
+    
+    if (navSearchInput) {
+      navSearchInput.addEventListener('input', handleSearchInput);
+    }
+    if (oldSearchInput) {
+      oldSearchInput.addEventListener('input', handleSearchInput);
+    }
+
+    // Prevent form submission on products page so it filters live instead of reloading
+    const navSearchForm = document.querySelector('.hdr-search-form');
+    if (navSearchForm) {
+      navSearchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        filterProducts();
+      });
+    }
+
+    document.getElementById('sortSelect').addEventListener('change', filterProducts);
 
     const categoryCheckboxes = document.querySelectorAll('#categoryFilters input[type="checkbox"]');
     const priceFilter = document.getElementById('priceFilter');
@@ -886,7 +949,8 @@
     });
 
     function filterProducts() {
-      const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+      const searchTerm = currentSearchTerm;
+      
       const currentSort = document.getElementById('sortSelect').value;
       const maxPrice = parseFloat(priceFilter.value);
       
@@ -896,9 +960,31 @@
       Object.keys(products).forEach(key => {
         if (selectedCats.includes('all') || selectedCats.includes(key)) {
           let catProducts = products[key] || [];
+          const categoryName = key.replace(/-/g, ' ').toLowerCase();
+          
           catProducts.forEach(product => {
-            if (product.name && product.price <= maxPrice && product.name.toLowerCase().includes(searchTerm)) {
-              filtered.push(product);
+            if (product.name && product.price <= maxPrice) {
+              const pName = product.name.toLowerCase();
+              
+              // Common keywords logic
+              let keywords = [];
+              if (pName.includes('para') || pName.includes('dolo') || pName.includes('ibu')) {
+                keywords.push('fever', 'headache', 'body ache', 'pain');
+              }
+              if (pName.includes('sani') || pName.includes('mask')) {
+                keywords.push('covid', 'safety', 'hygiene');
+              }
+              if (pName.includes('bp') || pName.includes('gluco')) {
+                keywords.push('test', 'machine', 'check');
+              }
+              
+              const matchName = pName.includes(searchTerm);
+              const matchCategory = categoryName.includes(searchTerm);
+              const matchKeyword = keywords.some(kw => kw.includes(searchTerm) || searchTerm.includes(kw));
+              
+              if (matchName || matchCategory || matchKeyword || searchTerm === "") {
+                filtered.push(product);
+              }
             }
           });
         }
@@ -916,9 +1002,11 @@
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const searchParam = urlParams.get('search');
+    const searchParam = urlParams.get('search') || urlParams.get('q');
     if (searchParam) {
-      document.getElementById('productSearch').value = searchParam;
+      currentSearchTerm = searchParam.toLowerCase().trim();
+      if (navSearchInput) navSearchInput.value = searchParam;
+      if (oldSearchInput) oldSearchInput.value = searchParam;
       filterProducts();
     }
 
