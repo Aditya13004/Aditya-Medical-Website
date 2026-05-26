@@ -1,0 +1,733 @@
+/* ================================================================
+   theme.css — Aditya Medical & General Store
+   Complete Professional Light/Dark Theme System
+   ================================================================ */
+
+/* ── 1. CSS VARIABLES — LIGHT (default) ── */
+:root {
+  --bg:            #f5f9ff;
+  --bg-card:       #ffffff;
+  --bg-nav:        rgba(255,255,255,0.88);
+  --bg-input:      #f1f5f9;
+  --bg-section:    #eef4ff;
+  --bg-footer:     #0f172a;
+
+  --primary:       #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --secondary:     #4f46e5;
+  --accent:        #14b8a6;
+
+  --text:          #0f172a;
+  --text-muted:    #64748b;
+  --text-light:    #94a3b8;
+
+  --border:        #dbeafe;
+  --border-muted:  #e2e8f0;
+
+  --shadow-sm:  0 1px 3px rgba(15,23,42,0.06);
+  --shadow-md:  0 4px 16px rgba(15,23,42,0.08);
+  --shadow-lg:  0 10px 40px rgba(15,23,42,0.10);
+  --shadow-xl:  0 20px 60px rgba(15,23,42,0.12);
+
+  --radius:    12px;
+  --radius-lg: 20px;
+  --transition: 0.3s ease;
+}
+
+/* ── 2. CSS VARIABLES — DARK ── */
+[data-theme="dark"] {
+  --bg:            #0b1220;
+  --bg-card:       #111827;
+  --bg-nav:        rgba(15,23,42,0.95);
+  --bg-input:      #1e293b;
+  --bg-section:    #0f172a;
+  --bg-footer:     #060d18;
+
+  --primary:       #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: #1e3a5f;
+  --secondary:     #6366f1;
+  --accent:        #2dd4bf;
+
+  --text:          #f8fafc;
+  --text-muted:    #94a3b8;
+  --text-light:    #64748b;
+
+  --border:        #1e293b;
+  --border-muted:  #1e293b;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg:  0 10px 40px rgba(0,0,0,0.5);
+  --shadow-xl:  0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* ── 3. GLOBAL TRANSITIONS ── */
+*,
+*::before,
+*::after {
+  transition:
+    background-color var(--transition),
+    border-color     var(--transition),
+    color            var(--transition),
+    box-shadow       var(--transition);
+}
+
+/* Exclude elements that should NOT transition (animations, transforms) */
+img, svg, video, canvas,
+.hero-bg-track, .hero-bg-img,
+[class*="animate"],
+button svg, a svg {
+  transition: none;
+}
+
+/* ── 4. BASE ── */
+html {
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* ── 5. NAVBAR ── */
+#siteHeader {
+  background: var(--bg-nav) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+#siteHeader.scrolled {
+  background: var(--bg-nav) !important;
+}
+
+.hdr-logo-name {
+  color: var(--text) !important;
+}
+.hdr-logo-sub {
+  color: var(--text-muted) !important;
+}
+
+.hn {
+  color: var(--text-muted) !important;
+}
+.hn:hover,
+.hn.active {
+  color: var(--primary) !important;
+  background: var(--primary-light) !important;
+}
+
+.hdr-search-form {
+  background: var(--bg-input) !important;
+  border-color: var(--border) !important;
+}
+.hdr-search-form input {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+.hdr-search-form input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* ── 6. THEME TOGGLE BUTTON (premium glass style) ── */
+#themeToggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-muted) !important;
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm) !important;
+  font-size: 1.1rem;
+  padding: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  flex-shrink: 0;
+}
+#themeToggle:hover {
+  transform: rotate(20deg) scale(1.1);
+  box-shadow: var(--shadow-md) !important;
+}
+#themeToggle .text {
+  display: none;
+}
+
+/* ── 7. CARDS ── */
+.product-card,
+.feature-item,
+.service-card,
+.stat-card,
+.offer-card,
+.category-card,
+.review-card,
+.info-card,
+.dashboard-card,
+.order-card,
+.quick-card,
+[class*="-card"],
+[class*="card-"] {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.product-card h4,
+.product-card h3,
+.feature-item h4,
+.service-card h3,
+[class*="-card"] h1,
+[class*="-card"] h2,
+[class*="-card"] h3,
+[class*="-card"] h4 {
+  color: var(--text) !important;
+}
+
+.product-card p,
+.feature-item p,
+.service-card p,
+[class*="-card"] p {
+  color: var(--text-muted) !important;
+}
+
+/* ── 8. SECTIONS ── */
+section,
+.section,
+.search-section,
+.products-section,
+.about,
+.about-section,
+.services,
+.services-section,
+.features,
+.features-section,
+.categories-section,
+.testimonials-section,
+.offers-section,
+.stats-section,
+.contact,
+.contact-section,
+.faq-section,
+.page-hero,
+.content-section {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Alternating section bg */
+.search-section,
+.about,
+.features,
+.categories-section,
+.contact {
+  background: var(--bg-section) !important;
+}
+
+/* ── 9. FOOTER ── */
+footer,
+.footer,
+.site-footer,
+#siteFooter {
+  background: var(--bg-footer) !important;
+  color: #94a3b8 !important;
+}
+
+footer h3, footer h4,
+.footer h3, .footer h4,
+.footer-title {
+  color: #f8fafc !important;
+}
+
+footer a, .footer a {
+  color: #94a3b8 !important;
+}
+footer a:hover, .footer a:hover {
+  color: var(--primary) !important;
+}
+
+/* ── 10. INPUTS / FORMS ── */
+input,
+textarea,
+select {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+  border-color: var(--border-muted) !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15) !important;
+  outline: none !important;
+}
+label {
+  color: var(--text) !important;
+}
+
+/* ── 11. BUTTONS ── */
+.btn-primary,
+button[class*="primary"],
+.add-btn,
+.checkout-btn,
+.submit-btn,
+.search-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+/* Ghost / outline buttons */
+.btn-ghost,
+.hn-ghost {
+  background: transparent !important;
+  border-color: var(--border-muted) !important;
+  color: var(--text-muted) !important;
+}
+.hn-ghost:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+/* ── 12. CART PANEL ── */
+#cartPanel,
+aside#cartPanel {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+#cartPanel h2 {
+  color: var(--primary) !important;
+}
+#cartItems li {
+  background: var(--bg-input) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── 13. QUICK ORDER / ORDER PAGE ── */
+.order-form,
+.quick-order-form,
+.order-section {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── 14. LOGIN / REGISTER ── */
+.login-card,
+.register-card,
+.auth-card,
+.login-box,
+.register-box,
+.auth-box {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.login-card h2,
+.auth-card h2 {
+  color: var(--text) !important;
+}
+
+/* ── 15. PRESCRIPTION PAGE ── */
+.upload-section,
+.prescription-form,
+.prescription-card {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+/* ── 16. AI HELP PAGE ── */
+.ai-card,
+.ai-section,
+.recommendation-card {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── 17. CUSTOMER DASHBOARD ── */
+.dashboard-section,
+.orders-list,
+.order-item {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.order-item h4, .order-item p {
+  color: var(--text) !important;
+}
+
+/* ── 18. CONTACT PAGE ── */
+.contact-card,
+.contact-form-wrapper {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+/* ── 19. CHATBOT ── */
+#jarvis-chat-widget,
+.chatbot-container,
+.chat-widget,
+[id*="chat-widget"],
+[class*="chatbot"] {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.chat-message.bot {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+}
+.chat-message.user {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
+
+/* ── 20. FLOATING BUTTONS ── */
+.floating-wa,
+#floating-whatsapp-widget {
+  /* WhatsApp keeps its green regardless of theme */
+  background-color: #25d366 !important;
+}
+
+#jarvisBtn,
+.jarvis-btn,
+[id*="jarvis-btn"],
+[class*="jarvis-btn"] {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+}
+
+/* ── 21. TABLES ── */
+table {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+}
+th {
+  background: var(--bg-section) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+td {
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+tr:hover td {
+  background: var(--bg-input) !important;
+}
+
+/* ── 22. MODALS / OVERLAYS ── */
+.modal,
+.modal-content,
+.overlay-card,
+.popup-card,
+[class*="modal-"] {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.modal-header {
+  border-bottom-color: var(--border) !important;
+}
+
+/* ── 23. BADGES / PILLS ── */
+.badge,
+.pill,
+.tag {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+/* ── 24. HEADINGS IN ALL CONTEXTS ── */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text) !important;
+}
+[data-theme="dark"] p {
+  color: var(--text-muted) !important;
+}
+[data-theme="dark"] span {
+  color: inherit;
+}
+
+/* ── 25. SCROLLBAR (dark mode) ── */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  background: #0b1220;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* ── 26. SEARCH RESULTS DROPDOWN ── */
+.search-results,
+.autocomplete-dropdown,
+[class*="search-result"] {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.search-result-item:hover {
+  background: var(--bg-input) !important;
+}
+
+/* ── 27. PROGRESS / STEPS ── */
+.step-item,
+.progress-step {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── 28. MISC UTILITY ── */
+hr,
+.divider {
+  border-color: var(--border) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.bg-white,
+.bg-light {
+  background: var(--bg-card) !important;
+}
+
+/* ── 29. HERO — keep it vivid, just overlay adjustments ── */
+[data-theme="dark"] .hero-overlay {
+  background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(11,18,32,0.75) 100%) !important;
+}
+
+/* ── 30. NAVBAR ACCOUNT ACTIVE STATE ── */
+.hn-account-active {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+/* ── 31. MOBILE DRAWER ── */
+.hdr-drawer {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+.hd-link {
+  color: var(--text) !important;
+}
+.hd-link:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+/* ================================================================
+   DARK MODE — TEXT VISIBILITY (override any hardcoded colors)
+   These use [data-theme="dark"] for maximum specificity
+   ================================================================ */
+
+/* ── All text forced visible in dark mode ── */
+[data-theme="dark"] body,
+[data-theme="dark"] main,
+[data-theme="dark"] article,
+[data-theme="dark"] section,
+[data-theme="dark"] .container,
+[data-theme="dark"] .wrapper,
+[data-theme="dark"] div {
+  color: var(--text);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] li,
+[data-theme="dark"] span:not(.icon):not(.status-dot),
+[data-theme="dark"] small,
+[data-theme="dark"] label,
+[data-theme="dark"] td,
+[data-theme="dark"] th,
+[data-theme="dark"] .order-meta,
+[data-theme="dark"] .med-label,
+[data-theme="dark"] .order-time,
+[data-theme="dark"] a:not(.btn-primary):not(.btn):not(.hn):not(.hd-link):not(.login-link) {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] a:not(.btn-primary):not(.btn):not(.hn):not(.hd-link):not(.login-link):hover {
+  color: var(--primary) !important;
+}
+
+/* Preserve text on colored backgrounds */
+[data-theme="dark"] .status-badge,
+[data-theme="dark"] .badge-pending,
+[data-theme="dark"] .badge-accepted,
+[data-theme="dark"] .badge-delivered,
+[data-theme="dark"] button:not(#themeToggle),
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .sidebar-avatar,
+[data-theme="dark"] .chat-message.user {
+  color: inherit !important;
+}
+
+/* ── MY ORDERS / CUSTOMER DASHBOARD ── */
+[data-theme="dark"] .dashboard-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e2d4e 100%) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dashboard-header h1 {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+[data-theme="dark"] .dashboard-header p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .dashboard-sidebar {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .sidebar-name {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .sidebar-email {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .sidebar-menu {
+  border-top-color: var(--border) !important;
+}
+
+[data-theme="dark"] .sidebar-menu a {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .sidebar-menu a:hover {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .sidebar-menu a.active {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+/* Order Cards */
+[data-theme="dark"] .order-card {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+[data-theme="dark"] .order-card:hover {
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+[data-theme="dark"] .order-header {
+  border-bottom-color: var(--border) !important;
+}
+
+[data-theme="dark"] .order-number,
+[data-theme="dark"] .med-content {
+  color: var(--text) !important;
+}
+
+/* Order status badges */
+[data-theme="dark"] .badge-pending {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .badge-accepted {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .badge-delivered {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+}
+
+/* Medicines list inside order card */
+[data-theme="dark"] .medicines-list {
+  background: var(--bg-input) !important;
+  border-color: var(--border) !important;
+}
+
+/* Tracking Steps */
+[data-theme="dark"] .tracking-steps::before {
+  background: var(--border) !important;
+}
+
+[data-theme="dark"] .step-dot {
+  background: var(--bg-input) !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .step.active .step-dot {
+  border-color: #4ade80 !important;
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.4) !important;
+}
+
+[data-theme="dark"] .step.current .step-dot {
+  border-color: var(--primary) !important;
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+}
+
+[data-theme="dark"] .step-label {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .step.active .step-label,
+[data-theme="dark"] .step.current .step-label {
+  color: var(--text) !important;
+}
+
+/* Empty state */
+[data-theme="dark"] .empty-state {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .empty-state h2 {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .empty-state p {
+  color: var(--text-muted) !important;
+}

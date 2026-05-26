@@ -1,5 +1,6 @@
 // Shared cart logic for all pages
-let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+// KEY: 'am_cart' — canonical key shared with script.js and mobile-fixes.js
+let cart = JSON.parse(localStorage.getItem("am_cart") || "[]");
 
 function updateCartUI() {
   const cartItemsList = document.getElementById("cartItems");
@@ -14,39 +15,46 @@ function updateCartUI() {
   cart.forEach((item, idx) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <img src="${item.img || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=100&h=100&fit=crop&crop=center'}" alt="" style="width:32px;height:32px;border-radius:4px;border:1px solid #e3eaf3;background:#f4f8fb;object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=100&h=100&fit=crop&crop=center'">
-        <div style="flex:1;">
-          <span style="font-weight:500;display:block;">${item.name}</span>
-          <span style="color:#1976d2;font-size:0.9rem;">₹${item.price.toFixed(2)}</span>
+      <div class="cart-item-info">
+        <img src="${item.img || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=100&h=100&fit=crop&crop=center'}" alt="" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=100&h=100&fit=crop&crop=center'">
+        <div class="cart-item-details">
+          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-price">₹${item.price.toFixed(2)}</span>
         </div>
       </div>
-      <div class="cart-qty-controls">
-        <button class="qty-btn" data-idx="${idx}" data-action="decrease">-</button>
-        <span class="cart-qty">${item.quantity}</span>
-        <button class="qty-btn" data-idx="${idx}" data-action="increase">+</button>
-        <button class="remove-btn" data-idx="${idx}" title="Remove">🗑️</button>
+      <div class="cart-item-actions">
+        <div class="cart-qty-controls">
+          <button class="qty-btn" data-idx="${idx}" data-action="decrease">-</button>
+          <span class="cart-qty">${item.quantity}</span>
+          <button class="qty-btn" data-idx="${idx}" data-action="increase">+</button>
+        </div>
+        <button class="remove-btn" data-idx="${idx}" title="Remove">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
       </div>
     `;
     cartItemsList.appendChild(li);
     total += item.price * item.quantity;
   });
   
-  totalPriceDisplay.textContent = `Total: ₹${total.toFixed(2)}`;
+  totalPriceDisplay.textContent = `₹${total.toFixed(2)}`;
   cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("am_cart", JSON.stringify(cart));
 }
 
 // Event listeners for cart functionality
 document.addEventListener("click", function(e) {
   // Add to Cart (Standard or Premium)
-  if (e.target.classList.contains("add-btn") || e.target.classList.contains("add-btn-premium")) {
-    const name = e.target.getAttribute("data-name");
-    const price = parseFloat(e.target.getAttribute("data-price"));
-    const img = e.target.getAttribute("data-img");
+  const addBtn = e.target.closest(".add-btn, .add-btn-premium");
+  if (addBtn) {
+    if (addBtn.classList.contains("is-adding")) return;
+    addBtn.classList.add("is-adding");
+    const name = addBtn.getAttribute("data-name");
+    const price = parseFloat(addBtn.getAttribute("data-price"));
+    const img = addBtn.getAttribute("data-img");
     
     // Read card quantity selector if available
-    const card = e.target.closest(".product-card");
+    const card = addBtn.closest(".product-card");
     const qtyValEl = card ? card.querySelector(".p-qty-val") : null;
     const qtyToAdd = qtyValEl ? parseInt(qtyValEl.textContent) : 1;
     
@@ -63,42 +71,60 @@ document.addEventListener("click", function(e) {
 
     // Show beautiful success toast notification
     if (typeof showCartToast === 'function') {
-      showCartToast(`✓ Added ${qtyToAdd}x ${name} to cart!`, "ok");
-    } else {
-      const btn = e.target;
-      const originalText = btn.textContent;
-      btn.textContent = "✓ Added";
-      btn.style.background = "#22c55e";
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = "";
-      }, 1000);
+      showCartToast(`✓ ${qtyToAdd}x ${name} added to cart`, "ok");
     }
+
+    // Modern professional button feedback
+    const originalHTML = addBtn.innerHTML;
+    const originalWidth = addBtn.offsetWidth + "px"; // prevent jumping
+    
+    addBtn.style.width = originalWidth;
+    addBtn.style.background = "linear-gradient(135deg, #10B981, #059669)";
+    addBtn.style.color = "#ffffff";
+    addBtn.style.boxShadow = "0 8px 16px rgba(16, 185, 129, 0.3)";
+    addBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Added`;
+    
+    // Cleanly revert
+    setTimeout(() => {
+      addBtn.innerHTML = originalHTML;
+      addBtn.style.background = "";
+      addBtn.style.color = "";
+      addBtn.style.boxShadow = "";
+      addBtn.style.width = "";
+      addBtn.classList.remove("is-adding");
+    }, 1500);
   }
   
   // Cart quantity controls
-  if (e.target.classList.contains("qty-btn")) {
-    const idx = +e.target.getAttribute("data-idx");
-    const action = e.target.getAttribute("data-action");
-    
-    if (action === "increase") {
-      cart[idx].quantity += 1;
-    } else if (action === "decrease") {
-      cart[idx].quantity -= 1;
-      if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+  const qtyBtn = e.target.closest(".qty-btn");
+  if (qtyBtn) {
+    const idx = parseInt(qtyBtn.getAttribute("data-idx"), 10);
+    const action = qtyBtn.getAttribute("data-action");
+
+    if (!isNaN(idx) && cart[idx]) {
+      if (action === "increase") {
+        cart[idx].quantity += 1;
+      } else if (action === "decrease") {
+        cart[idx].quantity -= 1;
+        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+      }
+      updateCartUI();
     }
-    updateCartUI();
   }
-  
+
   // Remove item
-  if (e.target.classList.contains("remove-btn")) {
-    const idx = +e.target.getAttribute("data-idx");
-    cart.splice(idx, 1);
-    updateCartUI();
+  const removeBtn = e.target.closest(".remove-btn");
+  if (removeBtn) {
+    const idx = parseInt(removeBtn.getAttribute("data-idx"), 10);
+    if (!isNaN(idx)) {
+      cart.splice(idx, 1);
+      updateCartUI();
+    }
   }
-  
-  // Cart toggle
-  if (e.target.id === "cartToggle") {
+
+  // Cart toggle — use .closest() so child clicks (SVG, span) also work
+  const cartToggleBtn = e.target.closest("#cartToggle");
+  if (cartToggleBtn) {
     const cartPanel = document.getElementById("cartPanel");
     if (cartPanel) cartPanel.classList.toggle("hidden");
   }
@@ -110,72 +136,23 @@ async function checkout() {
     return;
   }
 
-  const proceed = async () => {
-    try {
-      // Setup payload for Supabase insertion
-      const userStr = localStorage.getItem('authUser');
-      const user = userStr ? JSON.parse(userStr) : { name: 'Customer', phone: 'N/A' };
-      const itemsText = cart.map(i => `${i.name} (${i.quantity}x) - ₹${i.price}`).join(', ');
+  const email = localStorage.getItem('am_user_email');
+  const hasAuthToken = window.Auth && Auth.getToken();
 
-      const sbUrl = "https://rfcxhcucpzaplbprmbqm.supabase.co/rest/v1/orders";
-      const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmY3hoY3VjcHphcGxicHJtYnFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NzgxOTcsImV4cCI6MjA5MDM1NDE5N30.ppk-3ExeHqkw3IHYz6Rgarr4FqMoIZaWShHgY2PI_Ls";
-
-      const btn = document.querySelector('.checkout-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
-
-      const resp = await fetch(sbUrl, {
-        method: 'POST',
-        headers: {
-            'apikey': sbKey,
-            'Authorization': 'Bearer ' + sbKey,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-        },
-        body: JSON.stringify({
-            name: user.name,
-            phone: user.phone || 'N/A',
-            medicines: itemsText,
-            status: 'pending',
-            created_at: new Date().toISOString()
-        })
-      });
-
-      if (!resp.ok) throw new Error('Failed to connect to order server');
-      
-      const dataArr = await resp.json();
-      const orderData = dataArr[0] || { id: 'NEW' };
-
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-      alert(`Thank you for your purchase!\n\nOrder ID: ${orderData.id}\nTotal Items: ${itemCount}\nTotal Amount: ₹${total.toFixed(2)}\n\nYour order has been sent directly to the Admin.`);
-
-      cart = [];
-      updateCartUI();
-      const cartPanel = document.getElementById("cartPanel");
-      if (cartPanel) cartPanel.classList.add("hidden");
-      
-      if (btn) { btn.disabled = false; btn.textContent = 'Proceed to Checkout'; }
-    } catch (err) {
-      alert('Order error: ' + err.message + '\nPlease refresh and try again.');
-      const btn = document.querySelector('.checkout-btn');
-      if (btn) { btn.disabled = false; btn.textContent = 'Proceed to Checkout'; }
-    }
-  };
-
-  if (!window.Auth || !Auth.getToken()) {
+  if (!email && !hasAuthToken) {
     if (window.Auth) {
-      Auth.requireAuth(proceed);
+      Auth.requireAuth(() => { window.location.href = 'checkout.html'; });
       return;
     } else {
-      alert('Please login to place the order.');
+      alert('Please login to checkout.');
+      window.location.href = 'login.html';
       return;
     }
   }
 
-  await proceed();
+  window.location.href = 'checkout.html';
 }
 
-// Expose checkout to global scope for inline HTML onclick
 window.checkout = checkout;
 
 // On page load, update cart UI

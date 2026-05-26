@@ -13,68 +13,107 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 40%, #020617 100%);
       display: flex; align-items: center; justify-content: center;
       padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle background grid pattern */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      z-index: 0;
+    }
+
+    .glow-sphere {
+      position: absolute;
+      width: 400px; height: 400px;
+      background: rgba(37, 99, 235, 0.15);
+      filter: blur(80px);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
     }
 
     .card {
-      background: rgba(255,255,255,.05);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 24px;
-      padding: 3rem 2.5rem;
-      width: 100%; max-width: 420px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 3.5rem 3rem;
+      width: 100%; max-width: 440px;
       text-align: center;
-      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05);
+      position: relative;
+      z-index: 1;
     }
 
-    .shield { font-size: 3.5rem; margin-bottom: 1.2rem; }
+    .shield { 
+      margin-bottom: 1.5rem; 
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 80px; height: 80px;
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(37,99,235,0.2);
+    }
 
-    h1 { font-size: 1.8rem; font-weight: 800; color: #f8fafc; margin-bottom: .3rem; }
-    .sub { color: #94a3b8; font-size: .9rem; margin-bottom: 2rem; }
+    h1 { font-size: 2rem; font-weight: 800; color: #f8fafc; margin-bottom: .4rem; letter-spacing: -0.5px; }
+    .sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 2.5rem; }
 
-    .form-group { margin-bottom: 1.2rem; text-align: left; }
-    .form-group label { display: block; font-weight: 600; color: #cbd5e1; font-size: .88rem; margin-bottom: .4rem; }
+    .form-group { margin-bottom: 1.5rem; text-align: left; }
+    .form-group label { display: block; font-weight: 600; color: #cbd5e1; font-size: .88rem; margin-bottom: .6rem; }
     .form-group input {
-      width: 100%; padding: .9rem 1.1rem;
-      background: rgba(255,255,255,.08);
-      border: 1.5px solid rgba(255,255,255,.15);
-      border-radius: 12px; color: #f8fafc;
+      width: 100%; padding: 1.1rem 1.4rem;
+      background: rgba(0,0,0,0.2);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 16px; color: #f8fafc;
       font-size: 1rem; font-family: inherit;
-      transition: all .25s;
+      transition: all .3s;
     }
     .form-group input:focus {
       outline: none;
       border-color: #3b82f6;
-      box-shadow: 0 0 0 4px rgba(59,130,246,.2);
-      background: rgba(255,255,255,.12);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.2), inset 0 0 10px rgba(59,130,246,.1);
+      background: rgba(15,23,42,0.8);
     }
-    .form-group input::placeholder { color: #64748b; }
+    .form-group input::placeholder { color: #475569; }
 
     .btn {
-      width: 100%; padding: 1rem;
-      background: linear-gradient(135deg,#3b82f6,#1d4ed8);
-      color: #fff; border: none; border-radius: 12px;
-      font-size: 1rem; font-weight: 700; cursor: pointer;
-      transition: all .3s; box-shadow: 0 4px 18px rgba(59,130,246,.4);
-      margin-top: .4rem;
+      width: 100%; padding: 1.1rem;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff; border: none; border-radius: 50px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      transition: all .3s; box-shadow: 0 8px 24px rgba(37,99,235,.3);
+      margin-top: .5rem;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,130,246,.5); }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(37,99,235,.5); background: linear-gradient(135deg, #3b82f6, #2563eb); }
 
     .error-msg {
-      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.4);
-      color: #fca5a5; border-radius: 10px; padding: .75rem 1rem;
-      font-size: .9rem; margin-bottom: 1.2rem; display: none;
+      background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      color: #fca5a5; border-radius: 12px; padding: 1rem;
+      font-size: .95rem; margin-bottom: 1.5rem; display: none;
     }
     .error-msg.show { display: block; }
 
-    .footer-note { color: #475569; font-size: .78rem; margin-top: 2rem; }
+    .footer-note { color: #475569; font-size: .8rem; margin-top: 2.5rem; }
   </style>
 </head>
 <body>
+  <div class="glow-sphere"></div>
   <div class="card">
-    <div class="shield">🔒</div>
+    <div class="shield">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    </div>
     <h1>Admin Access</h1>
     <p class="sub">Restricted area · Aditya Medical</p>
 
@@ -89,6 +128,12 @@
       </div>
       <button type="submit" class="btn" id="loginBtn">🔓 Login to Dashboard</button>
     </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+      <a href="login.html" style="display: inline-block; padding: 0.6rem 1.2rem; background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">
+        👤 User Login
+      </a>
+    </div>
 
     <p class="footer-note">This page is for authorized personnel only. Access is logged.</p>
   </div>

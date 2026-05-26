@@ -1,14 +1,13 @@
-import os
-import re
+const fs = require('fs');
 
-header_html = """  <!-- ══ HEADER ══ -->
+const headerHtml = `  <!-- ══ HEADER ══ -->
   <header id="siteHeader">
     <div class="hdr-inner">
       <a href="index.html" class="hdr-logo" id="logoClickAdmin">
         <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
         <div>
           <span class="hdr-logo-name">Aditya Medical</span>
-          <span class="hdr-logo-sub">&amp; General Store &middot; Jalgaon</span>
+          <span class="hdr-logo-sub">&amp; General Store </span>
         </div>
       </a>
 
@@ -92,17 +91,12 @@ header_html = """  <!-- ══ HEADER ══ -->
             const vel = document.getElementById('userWelcome');
             if (vel) {
               const firstChar = (storedName.charAt(0) || 'U').toUpperCase();
-              vel.innerHTML = `
-                <div class="user-welcome">
-                  <div class="user-avatar">${firstChar}</div>
-                  <span class="user-name-text">${storedName.split(' ')[0]}</span>
-                </div>
-              `;
+              vel.innerHTML = '<div class="user-welcome"><div class="user-avatar">' + firstChar + '</div><span class="user-name-text">' + storedName.split(" ")[0] + '</span></div>';
               vel.style.display = 'block';
             }
             const loginLinks = document.querySelectorAll('.login-link');
             loginLinks.forEach(l => {
-              l.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span class="account-text">${storedName.split(' ')[0]}</span>`;
+              l.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span class="account-text">' + storedName.split(" ")[0] + '</span>';
               l.classList.remove('hn-ghost');
               l.classList.add('hn-account-active');
             });
@@ -110,9 +104,9 @@ header_html = """  <!-- ══ HEADER ══ -->
         }, 20);
       })();
     </script>
-  </header>"""
+  </header>`;
 
-files_to_update = [
+const filesToUpdate = [
     'index.html',
     'products.html',
     'prescription-upload.html',
@@ -120,31 +114,28 @@ files_to_update = [
     'contact.html',
     'customer-dashboard.html',
     'login.html',
-    'order.html',
     'about.html',
     'faq.html',
     'admin-login.html',
     'test-admin-login.html',
     'test-admin-orders.html',
     'test-supabase-orders.html'
-]
+];
 
-# We need to account for slight variations in how <header id="siteHeader"> is formatted,
-# sometimes it has <!-- ══ HEADER ══ --> before it, sometimes not.
-pattern1 = re.compile(r'<!-- ══ HEADER ══ -->\s*<header id="siteHeader">.*?</header>', re.DOTALL)
-pattern2 = re.compile(r'<header id="siteHeader">.*?</header>', re.DOTALL)
+const pattern1 = /<!-- ══ HEADER ══ -->\s*<header id="siteHeader">[\s\S]*?<\/header>/g;
+const pattern2 = /<header id="siteHeader">[\s\S]*?<\/header>/g;
 
-for f in files_to_update:
-    if os.path.exists(f):
-        with open(f, 'r', encoding='utf-8') as file:
-            content = file.read()
+for (const file of filesToUpdate) {
+    if (fs.existsSync(file)) {
+        let content = fs.readFileSync(file, 'utf8');
+        let newContent = content;
+        if (content.includes('<!-- ══ HEADER ══ -->')) {
+            newContent = content.replace(pattern1, headerHtml);
+        } else {
+            newContent = content.replace(pattern2, headerHtml);
+        }
         
-        # Check if <!-- ══ HEADER ══ --> exists with the header
-        if '<!-- ══ HEADER ══ -->' in content:
-            new_content = pattern1.sub(header_html, content)
-        else:
-            new_content = pattern2.sub(header_html, content)
-            
-        with open(f, 'w', encoding='utf-8') as file:
-            file.write(new_content)
-        print(f"Updated {f}")
+        fs.writeFileSync(file, newContent, 'utf8');
+        console.log("Updated " + file);
+    }
+}

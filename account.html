@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>/* Theme: apply before render */(function(){var t=localStorage.getItem('am_theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account – Aditya Medical & General Store</title>
+  <meta name="description" content="Manage your Aditya Medical account, profile, and saved addresses." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* ── BASE ── */
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0; background: #ffffff;
+      color: #0f172a; display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* ── ACCOUNT LAYOUT ── */
+    .account-page { max-width: 1200px; margin: 3rem auto 6rem; padding: 0 1.5rem; flex: 1; width: 100%; }
+    .account-header { margin-bottom: 2.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1.5rem; }
+    .account-header h1 { font-size: 2rem; font-weight: 800; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+    .account-header p { color: #64748b; margin: 0; font-size: 1.05rem; }
+
+    .acc-grid { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; align-items: start; }
+    
+    .acc-sidebar {
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    
+    .acc-content {
+      padding-left: 2rem;
+      border-left: 1px solid #f1f5f9;
+      min-height: 400px;
+    }
+
+    .profile-info { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; }
+    .profile-avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #14b8a6);
+      color: #fff; font-size: 2.5rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem; box-shadow: 0 10px 25px -5px rgba(37,99,235,0.3);
+    }
+    .profile-name { font-size: 1.4rem; font-weight: 800; margin: 0 0 0.3rem; }
+    .profile-email { font-size: 0.95rem; color: #64748b; margin: 0; }
+
+    .profile-nav { display: flex; flex-direction: column; gap: 0.5rem; }
+    .profile-nav a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem; border-radius: 8px; text-decoration: none;
+      color: #475569; font-weight: 600; font-size: 0.95rem;
+      transition: all 0.2s ease; border: 1px solid transparent;
+    }
+    .profile-nav a:hover { background: #f8fafc; color: #0f172a; }
+    .profile-nav a.active {
+      background: #eff6ff; color: #2563eb; font-weight: 700;
+    }
+
+    .acc-section-title {
+      font-size: 1.3rem; font-weight: 700; margin: 0 0 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem; color: #1e293b;
+    }
+    
+    .empty-state {
+      text-align: center; padding: 4rem 2rem; background: #f8fafc; border-radius: 12px;
+      color: #64748b; font-size: 1rem; font-weight: 500; border: 1px dashed #cbd5e1;
+    }
+
+    .btn-add {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%; padding: 1rem; border-radius: 8px;
+      border: 1px dashed #94a3b8; background: transparent; color: #2563eb;
+      font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;
+      margin-top: 1.5rem; text-decoration: none;
+    }
+    .btn-add:hover { background: #eff6ff; border-color: #2563eb; }
+    
+    .btn-logout {
+      width: 100%; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff;
+      color: #dc2626; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { background: #fef2f2; border-color: #fca5a5; }
+
+    @media (max-width: 768px) {
+      .acc-grid { grid-template-columns: 1fr; }
+      .acc-content { padding-left: 0; border-left: none; }
+      .account-page { padding-top: 6rem; }
+    }
+
+    /* ── ADDRESS STYLES & MODAL ── */
+    .addr-item {
+      padding: 1.2rem; border: 1px solid #e2e8f0; border-radius: 8px;
+      margin-bottom: 1rem; position: relative; background: #fff;
+    }
+    .addr-type-badge {
+      display: inline-block; background: #e0f2fe; color: #0369a1;
+      padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .addr-details { margin: 0; color: #475569; font-size: 0.95rem; line-height: 1.5; }
+    .addr-actions { position: absolute; top: 1.2rem; right: 1.2rem; }
+    .btn-delete { background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.2rem; }
+    
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff; width: 100%; max-width: 500px; border-radius: 12px;
+      padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute; top: 1.5rem; right: 1.5rem; background: transparent; border: none;
+      cursor: pointer; color: #64748b; padding: 0;
+    }
+    .modal-close:hover { color: #0f172a; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: #334155; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #2563eb; }
+    .btn-primary {
+      width: 100%; background: #2563eb; color: #fff; padding: 1rem; border: none;
+      border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 0.5rem;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    /* Hide floating buttons on Account Page to prevent overlapping */
+    .whatsapp-float-btn, .jarvis-chatbot-container, #floating-whatsapp-widget {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <header id="siteHeader">
+  <script>/* Theme: apply before render */(function(){var t=localStorage.getItem('am_theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <div class="hdr-inner">
+      <a href="index.html" class="hdr-logo">
+        <img src="images/Aditya Medical.png" alt="Aditya Medical Logo" />
+        <div>
+          <span class="hdr-logo-name">Aditya Medical</span>
+          <span class="hdr-logo-sub">&amp; General Store</span>
+        </div>
+      </a>
+
+      <nav class="hdr-nav" id="desktopNav">
+        <a href="index.html" class="hn nav-home">Home</a>
+        <a href="products.html" class="hn nav-products">Products</a>
+        <a href="order.html" class="hn nav-order">Quick Order</a>
+        <a href="prescription-upload.html" class="hn nav-prescription">Prescription</a>
+        <a href="ai-recommendations.html" class="hn nav-ai">AI Help</a>
+        <a href="contact.html" class="hn nav-contact">Contact</a>
+        <a href="customer-dashboard.html" class="hn nav-orders">My Orders</a>
+
+        <div class="hdr-nav-right">
+          <form action="products.html" method="GET" class="hdr-search-form" style="display: flex; align-items: center; background: #f1f5f9; padding: 0.4rem 0.8rem; border-radius: 50px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" style="margin-right:6px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" name="q" placeholder="Search..." style="border:none; background:transparent; outline:none; font-size:0.85rem; width:120px;" />
+          </form>
+
+          <div id="userWelcome" style="display:none; align-items:center;"></div>
+          <a href="login.html" class="hn hn-ghost nav-login login-link" title="Account">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="account-text">Account</span>
+          </a>
+          <button id="cartToggle" class="hn-cart" title="View Cart">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span>Cart (<span id="cartCount">0</span>)</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hdr-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="hdr-drawer" id="mobileDrawer">
+      <a href="index.html" class="hd-link nav-home">Home</a>
+      <a href="products.html" class="hd-link nav-products">Products</a>
+      <a href="order.html" class="hd-link hd-order nav-order">Quick Order</a>
+      <a href="prescription-upload.html" class="hd-link nav-prescription">Prescription</a>
+      <a href="ai-recommendations.html" class="hd-link nav-ai">AI Help</a>
+      <a href="contact.html" class="hd-link nav-contact">Contact</a>
+      <a href="customer-dashboard.html" class="hd-link nav-orders">My Orders</a>
+      <a href="login.html" class="hd-link nav-login login-link">Login</a>
+    </div>
+  </header>
+
+  <!-- ══ ACCOUNT PAGE ══ -->
+  <main class="account-page">
+    <div class="account-header">
+      <div class="account-title">
+        <h1 id="accGreeting">My Account</h1>
+        <p>Manage your profile and shipping addresses.</p>
+      </div>
+    </div>
+
+    <div class="acc-grid">
+      <!-- Profile Sidebar -->
+      <div class="acc-sidebar">
+        <div class="profile-info">
+          <div class="profile-avatar" id="accAvatar">U</div>
+          <h2 class="profile-name" id="accName">Loading...</h2>
+          <p class="profile-email" id="accEmail">loading@example.com</p>
+        </div>
+        <div class="profile-nav">
+          <a href="customer-dashboard.html">
+            <span style="display:flex; align-items:center; gap:0.6rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              My Orders
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+          <a href="account.html" class="active">
+            <span style="display:flex; align-items:center; gap:0.6rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              Saved Addresses
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+          
+          <button class="btn-logout" onclick="logout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="acc-content">
+        <h2 class="acc-section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          Saved Addresses
+        </h2>
+        <div id="addressListContainer">
+          <div class="empty-state">
+            Loading addresses...
+          </div>
+        </div>
+        <button class="btn-add" onclick="openAddressModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add New Address
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── ADDRESS MODAL ── -->
+  <div class="modal-overlay" id="addressModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAddressModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <h2 style="margin-top:0; margin-bottom: 1.5rem; font-size: 1.4rem;">Add New Address</h2>
+      <form id="addressForm">
+        <div class="form-group">
+          <label>Address Type</label>
+          <select id="addrType" required>
+            <option value="home">Home</option>
+            <option value="office">Office</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" id="addrName" required></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="addrPhone" required></div>
+        </div>
+        <div class="form-group"><label>Address Line 1</label><input type="text" id="addrLine1" placeholder="House no, Street name" required></div>
+        <div class="form-group"><label>Address Line 2 (Optional)</label><input type="text" id="addrLine2" placeholder="Landmark, Area"></div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" id="addrCity" required></div>
+          <div class="form-group"><label>State</label><input type="text" id="addrState" required></div>
+        </div>
+        <div class="form-group"><label>Pincode</label><input type="text" id="addrPin" required></div>
+        <button type="submit" class="btn-primary" id="saveAddrBtn">Save Address</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="supabase.js"></script>
+  <script>
+    async function loadAccountData() {
+      const sb = await getSupabase();
+      const { data: { session } } = await sb.auth.getSession();
+      
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const name = session.user.user_metadata?.full_name || localStorage.getItem('am_user_name') || 'User';
+      const email = session.user.email;
+      const firstName = name.split(' ')[0];
+      
+      document.getElementById('accGreeting').textContent = `Hi, ${firstName}!`;
+      document.getElementById('accName').textContent = name;
+      document.getElementById('accEmail').textContent = email;
+      document.getElementById('accAvatar').textContent = firstName.charAt(0).toUpperCase();
+
+      // Update navbar with user info
+      const vel = document.getElementById('userWelcome');
+      if (vel) {
+        vel.innerHTML = `<div class="user-welcome"><div class="user-avatar">${firstName.charAt(0).toUpperCase()}</div><span class="user-name-text">${firstName}</span></div>`;
+        vel.style.display = 'flex';
+      }
+      document.querySelectorAll('.login-link').forEach(l => {
+        l.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span class="account-text">' + firstName + '</span>';
+        l.href = 'account.html';
+        l.classList.remove('hn-ghost'); l.classList.add('hn-account-active');
+      });
+
+      // Load Addresses
+      loadAddresses(email);
+    }
+
+    async function loadAddresses(email) {
+      const sb = await getSupabase();
+      const container = document.getElementById('addressListContainer');
+      const { data, error } = await sb.from('saved_addresses').select('*').eq('user_email', email).order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error("Error loading addresses:", error);
+        container.innerHTML = '<div class="empty-state" style="color:red;">Error loading addresses.</div>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No saved addresses found.</div>';
+        return;
+      }
+
+      container.innerHTML = data.map(addr => `
+        <div class="addr-item">
+          <span class="addr-type-badge">${addr.type}</span>
+          <div class="addr-actions">
+            <button class="btn-delete" onclick="deleteAddress(${addr.id})" title="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+          </div>
+          <p class="addr-details">
+            <strong>${addr.full_name}</strong> &nbsp; | &nbsp; ${addr.phone}<br/>
+            ${addr.address_line1}${addr.address_line2 ? ', ' + addr.address_line2 : ''}<br/>
+            ${addr.city}, ${addr.state} - ${addr.pincode}
+          </p>
+        </div>
+      `).join('');
+    }
+
+    function openAddressModal() {
+      document.getElementById('addressModal').classList.add('active');
+    }
+    
+    function closeAddressModal() {
+      document.getElementById('addressModal').classList.remove('active');
+      document.getElementById('addressForm').reset();
+    }
+
+    document.getElementById('addressForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveAddrBtn');
+      btn.textContent = 'Saving...'; btn.disabled = true;
+
+      const email = document.getElementById('accEmail').textContent;
+      if (!email || email.includes('loading')) { alert('Session error. Please login again.'); return; }
+
+      const payload = {
+        user_email: email,
+        type: document.getElementById('addrType').value,
+        full_name: document.getElementById('addrName').value,
+        phone: document.getElementById('addrPhone').value,
+        address_line1: document.getElementById('addrLine1').value,
+        address_line2: document.getElementById('addrLine2').value,
+        city: document.getElementById('addrCity').value,
+        state: document.getElementById('addrState').value,
+        pincode: document.getElementById('addrPin').value
+      };
+
+      const sb = await getSupabase();
+      const { error } = await sb.from('saved_addresses').insert([payload]);
+      
+      btn.textContent = 'Save Address'; btn.disabled = false;
+      
+      if (error) {
+        console.error(error);
+        alert('Failed to save address.');
+      } else {
+        closeAddressModal();
+        loadAddresses(email);
+      }
+    });
+
+    async function deleteAddress(id) {
+      if(!confirm("Are you sure you want to delete this address?")) return;
+      const sb = await getSupabase();
+      const { error } = await sb.from('saved_addresses').delete().eq('id', id);
+      if (error) {
+        alert('Failed to delete address.');
+      } else {
+        const email = document.getElementById('accEmail').textContent;
+        loadAddresses(email);
+      }
+    }
+
+    async function logout() {
+      const sb = await getSupabase();
+      await sb.auth.signOut();
+      localStorage.removeItem('am_user_email');
+      localStorage.removeItem('am_user_name');
+      window.location.href = 'login.html';
+    }
+
+    // Load data on start
+    loadAccountData();
+  </script>
+  <script src="script.js"></script>
+  <script src="mobile-fixes.js"></script>
+  </body>
+</html>

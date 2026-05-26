@@ -1,220 +1,5 @@
 // Enhanced JS for Aditya Medical & General Store Website
-
-// Theme Toggle Functionality
-function initThemeToggle() {
-  const themeToggle = document.getElementById('themeToggle');
-  
-  if (!themeToggle) {
-    console.log('Theme toggle button not found');
-    return;
-  }
-  
-  const icon = themeToggle.querySelector('.icon');
-  const text = themeToggle.querySelector('span:last-child');
-  
-  if (!icon || !text) {
-    console.log('Theme toggle button elements not found');
-    return;
-  }
-  
-  // Check for saved theme preference or default to light
-  const currentTheme = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', currentTheme);
-  updateThemeButton(currentTheme);
-  
-  // Remove any existing event listeners
-  themeToggle.removeEventListener('click', handleThemeToggle);
-  
-  // Add new event listener
-  themeToggle.addEventListener('click', handleThemeToggle);
-  
-  function handleThemeToggle() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    console.log('Theme toggle clicked! Switching from', currentTheme, 'to', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeButton(newTheme);
-    
-    // Force immediate visual change
-    document.body.style.backgroundColor = newTheme === 'dark' ? '#1e293b' : '#f8fafc';
-    document.body.style.color = newTheme === 'dark' ? '#f8fafc' : '#1e293b';
-    
-    // Apply dark theme to all sections
-    if (newTheme === 'dark') {
-      applyDarkTheme();
-    } else {
-      applyLightTheme();
-    }
-  }
-  
-  function updateThemeButton(theme) {
-    if (theme === 'dark') {
-      icon.textContent = '☀️';
-      text.textContent = 'Light';
-    } else {
-      icon.textContent = '🌙';
-      text.textContent = 'Dark';
-    }
-  }
-  
-  function applyDarkTheme() {
-    // Apply dark theme to all sections
-    const sections = document.querySelectorAll('.search-section, .products-section, .about, .services, .contact');
-    sections.forEach(section => {
-      section.style.backgroundColor = '#1e293b';
-      section.style.color = '#f8fafc';
-    });
-    
-    // Apply dark theme to cards
-    const cards = document.querySelectorAll('.product-card, .feature-item, .service-card');
-    cards.forEach(card => {
-      card.style.backgroundColor = '#334155';
-      card.style.borderColor = '#475569';
-      card.style.color = '#f8fafc';
-    });
-    
-    // Apply dark theme to inputs
-    const inputs = document.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-      input.style.backgroundColor = '#475569';
-      input.style.color = '#f8fafc';
-      input.style.borderColor = '#64748b';
-    });
-  }
-  
-  function applyLightTheme() {
-    // Apply light theme to all sections
-    const sections = document.querySelectorAll('.search-section, .products-section, .about, .services, .contact');
-    sections.forEach(section => {
-      section.style.backgroundColor = '';
-      section.style.color = '';
-    });
-    
-    // Apply light theme to cards
-    const cards = document.querySelectorAll('.product-card, .feature-item, .service-card');
-    cards.forEach(card => {
-      card.style.backgroundColor = '';
-      card.style.borderColor = '';
-      card.style.color = '';
-    });
-    
-    // Apply light theme to inputs
-    const inputs = document.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-      input.style.backgroundColor = '';
-      input.style.color = '';
-      input.style.borderColor = '';
-    });
-  }
-}
-
-// Test function to manually switch themes (for debugging)
-function testThemeSwitch() {
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  
-  console.log('Manual theme switch from', currentTheme, 'to', newTheme);
-  document.documentElement.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  
-  // Force immediate visual change
-  document.body.style.backgroundColor = newTheme === 'dark' ? '#1e293b' : '#f8fafc';
-  document.body.style.color = newTheme === 'dark' ? '#f8fafc' : '#1e293b';
-  
-  // Apply theme changes
-  if (newTheme === 'dark') {
-    applyDarkTheme();
-  } else {
-    applyLightTheme();
-  }
-  
-  // Update button if it exists
-  const themeToggle = document.getElementById('themeToggle');
-  if (themeToggle) {
-    const icon = themeToggle.querySelector('.icon');
-    const text = themeToggle.querySelector('span:last-child');
-    if (icon && text) {
-      if (newTheme === 'dark') {
-        icon.textContent = '☀️';
-        text.textContent = 'Light';
-      } else {
-        icon.textContent = '🌙';
-        text.textContent = 'Dark';
-      }
-    }
-  }
-}
-
-// Global theme functions
-function applyDarkTheme() {
-  // Apply dark theme to all sections
-  const sections = document.querySelectorAll('.search-section, .products-section, .about, .services, .contact');
-  sections.forEach(section => {
-    section.style.backgroundColor = '#1e293b';
-    section.style.color = '#f8fafc';
-  });
-  
-  // Apply dark theme to cards
-  const cards = document.querySelectorAll('.product-card, .feature-item, .service-card');
-  cards.forEach(card => {
-    card.style.backgroundColor = '#334155';
-    card.style.borderColor = '#475569';
-    card.style.color = '#f8fafc';
-  });
-  
-  // Apply dark theme to inputs
-  const inputs = document.querySelectorAll('input, textarea');
-  inputs.forEach(input => {
-    input.style.backgroundColor = '#475569';
-    input.style.color = '#f8fafc';
-    input.style.borderColor = '#64748b';
-  });
-}
-
-function applyLightTheme() {
-  // Apply light theme to all sections
-  const sections = document.querySelectorAll('.search-section, .products-section, .about, .services, .contact');
-  sections.forEach(section => {
-    section.style.backgroundColor = '';
-    section.style.color = '';
-  });
-  
-  // Apply light theme to cards
-  const cards = document.querySelectorAll('.product-card, .feature-item, .service-card');
-  cards.forEach(card => {
-    card.style.backgroundColor = '';
-    card.style.borderColor = '';
-    card.style.color = '';
-  });
-  
-  // Apply light theme to inputs
-  const inputs = document.querySelectorAll('input, textarea');
-  inputs.forEach(input => {
-    input.style.backgroundColor = '';
-    input.style.color = '';
-    input.style.borderColor = '';
-  });
-}
-
-// Initialize theme toggle when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  initThemeToggle();
-  
-  // Debug: Check if theme is being applied
-  console.log('Current theme:', document.documentElement.getAttribute('data-theme'));
-  console.log('Saved theme:', localStorage.getItem('theme'));
-  
-  // Apply current theme on page load
-  const currentTheme = localStorage.getItem('theme') || 'light';
-  if (currentTheme === 'dark') {
-    applyDarkTheme();
-  }
-  
-  // Add test function to window for manual testing
-  window.testThemeSwitch = testThemeSwitch;
-});
+// Theme is handled by theme.js — do not add theme code here.
 
 // --- Product Data Split ---
 const medicines = [
@@ -263,6 +48,25 @@ const generalProducts = [
   { name: "Deodorant", price: 947.5 }
 ];
 
+// --- Ensure Cart Panel Exists Globally ---
+if (!document.getElementById("cartPanel")) {
+  const cartHTML = `
+  <aside id="cartPanel" class="hidden">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="cart-close" onclick="document.getElementById('cartPanel').classList.add('hidden')">×</button>
+    </div>
+    <div class="cart-content">
+      <ul id="cartItems"></ul>
+    </div>
+    <div class="cart-footer">
+      <h3 id="totalPrice">Total: ₹0.00</h3>
+      <button class="btn-primary" onclick="checkout()">Checkout</button>
+    </div>
+  </aside>`;
+  document.body.insertAdjacentHTML('beforeend', cartHTML);
+}
+
 // --- DOM Elements ---
 const medicineList = document.getElementById("medicine-list");
 const generalList = document.getElementById("general-list");
@@ -274,7 +78,14 @@ const cartCount = document.getElementById("cartCount");
 const cartToggle = document.getElementById("cartToggle");
 const cartPanel = document.getElementById("cartPanel");
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('am_cart')) || [];
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'am_cart') {
+    cart = JSON.parse(e.newValue) || [];
+    updateCartUI();
+  }
+});
 
 // --- Product Card Rendering ---
 function renderProductList(list, products) {
@@ -292,8 +103,8 @@ function renderProductList(list, products) {
 }
 
 // --- Initial Render ---
-renderProductList(medicineList, medicines);
-renderProductList(generalList, generalProducts);
+if (medicineList) renderProductList(medicineList, medicines);
+if (generalList) renderProductList(generalList, generalProducts);
 
 // --- Add to Cart with Quantity ---
 function addToCart(name, price) {
@@ -303,11 +114,16 @@ function addToCart(name, price) {
   } else {
     cart.push({ name, price, quantity: 1 });
   }
+  localStorage.setItem('am_cart', JSON.stringify(cart));
   updateCartUI();
+  if (cartPanel) {
+    cartPanel.classList.remove("hidden");
+  }
 }
 
 // --- Cart UI with Quantity Controls ---
 function updateCartUI() {
+  if (!cartItemsList || !totalPriceDisplay || !cartCount) return;
   cartItemsList.innerHTML = "";
   let total = 0;
   cart.forEach((item, idx) => {
@@ -327,28 +143,35 @@ function updateCartUI() {
     total += item.price * item.quantity;
   });
   totalPriceDisplay.textContent = `Total: ₹${total.toFixed(2)}`;
-  cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+  if (cartCount) cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
 }
 
+// Call updateCartUI once on load to show items across pages
+updateCartUI();
+
 // --- Cart Quantity Button Events ---
-cartItemsList.addEventListener("click", function(e) {
-  if (e.target.classList.contains("qty-btn")) {
-    const idx = +e.target.getAttribute("data-idx");
-    const action = e.target.getAttribute("data-action");
-    if (action === "increase") {
-      cart[idx].quantity += 1;
-    } else if (action === "decrease") {
-      cart[idx].quantity -= 1;
-      if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+if (cartItemsList) {
+  cartItemsList.addEventListener("click", function(e) {
+    if (e.target.classList.contains("qty-btn")) {
+      const idx = +e.target.getAttribute("data-idx");
+      const action = e.target.getAttribute("data-action");
+      if (action === "increase") {
+        cart[idx].quantity += 1;
+      } else if (action === "decrease") {
+        cart[idx].quantity -= 1;
+        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+      }
+      localStorage.setItem('am_cart', JSON.stringify(cart));
+      updateCartUI();
     }
-    updateCartUI();
-  }
-  if (e.target.classList.contains("remove-btn")) {
-    const idx = +e.target.getAttribute("data-idx");
-    cart.splice(idx, 1);
-    updateCartUI();
-  }
-});
+    if (e.target.classList.contains("remove-btn")) {
+      const idx = +e.target.getAttribute("data-idx");
+      cart.splice(idx, 1);
+      localStorage.setItem('am_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+  });
+}
 
 // --- Add to Cart Button Events ---
 document.addEventListener("click", function(e) {
@@ -360,56 +183,146 @@ document.addEventListener("click", function(e) {
 });
 
 // --- Search and Sort ---
-searchInput.addEventListener("input", () => {
-  const keyword = searchInput.value.toLowerCase();
-  renderProductList(
-    medicineList,
-    medicines.filter(p => p.name.toLowerCase().includes(keyword))
-  );
-  renderProductList(
-    generalList,
-    generalProducts.filter(p => p.name.toLowerCase().includes(keyword))
-  );
-});
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    const keyword = searchInput.value.toLowerCase();
+    if (medicineList) {
+      renderProductList(
+        medicineList,
+        medicines.filter(p => p.name.toLowerCase().includes(keyword))
+      );
+    }
+    if (generalList) {
+      renderProductList(
+        generalList,
+        generalProducts.filter(p => p.name.toLowerCase().includes(keyword))
+      );
+    }
+  });
+}
 
-sortSelect.addEventListener("change", () => {
-  let medSorted = [...medicines];
-  let genSorted = [...generalProducts];
-  if (sortSelect.value === "asc") {
-    medSorted.sort((a, b) => a.price - b.price);
-    genSorted.sort((a, b) => a.price - b.price);
-  } else if (sortSelect.value === "desc") {
-    medSorted.sort((a, b) => b.price - a.price);
-    genSorted.sort((a, b) => b.price - a.price);
-  }
-  renderProductList(medicineList, medSorted);
-  renderProductList(generalList, genSorted);
-});
+if (sortSelect) {
+  sortSelect.addEventListener("change", () => {
+    let medSorted = [...medicines];
+    let genSorted = [...generalProducts];
+    if (sortSelect.value === "asc") {
+      medSorted.sort((a, b) => a.price - b.price);
+      genSorted.sort((a, b) => a.price - b.price);
+    } else if (sortSelect.value === "desc") {
+      medSorted.sort((a, b) => b.price - a.price);
+      genSorted.sort((a, b) => b.price - a.price);
+    }
+    if (medicineList) renderProductList(medicineList, medSorted);
+    if (generalList) renderProductList(generalList, genSorted);
+  });
+}
 
 // --- Cart Toggle ---
-cartToggle.addEventListener("click", () => {
-  cartPanel.classList.toggle("hidden");
-});
+if (cartToggle && cartPanel) {
+  cartToggle.addEventListener("click", () => {
+    cartPanel.classList.toggle("hidden");
+  });
+}
 
 // --- Contact Form Handling ---
 const contactForm = document.getElementById("contactForm");
-contactForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  alert("Thank you! We'll get in touch with you soon.");
-  this.reset();
-});
-
-// --- Checkout ---
-function checkout() {
-  if (cart.length === 0) {
-    alert("Your cart is empty!");
-    return;
-  }
-  alert("Thank you for your purchase!");
-  cart = [];
-  updateCartUI();
-  cartPanel.classList.add("hidden");
+if (contactForm) {
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert("Thank you! We'll get in touch with you soon.");
+    this.reset();
+  });
 }
 
-// Expose checkout to global scope for inline HTML onclick
-window.checkout = checkout;
+// Checkout logic is handled in cart.js
+
+// Dynamic WhatsApp Widget Injection
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('floating-whatsapp-widget')) return;
+  
+  // Hide on Account/Orders page as requested by user
+  if (window.location.pathname.includes('customer-dashboard.html') || window.location.pathname.includes('login.html')) {
+    return;
+  }
+  
+  const wa = document.createElement('a');
+  wa.id = 'floating-whatsapp-widget';
+  wa.href = 'https://wa.me/917588662926?text=Hello%2C%20I%20want%20to%20order%20medicines';
+  wa.target = '_blank';
+  wa.className = 'floating-wa';
+  wa.innerHTML = '💬';
+  
+  wa.style.position = 'fixed';
+  wa.style.bottom = '90px'; // positioned above sticky mobile footer
+  wa.style.right = '24px';
+  wa.style.backgroundColor = '#25d366';
+  wa.style.color = '#ffffff';
+  wa.style.width = '56px';
+  wa.style.height = '56px';
+  wa.style.borderRadius = '50%';
+  wa.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
+  wa.style.display = 'flex';
+  wa.style.alignItems = 'center';
+  wa.style.justifyContent = 'center';
+  wa.style.fontSize = '26px';
+  wa.style.textDecoration = 'none';
+  wa.style.zIndex = '9999';
+  wa.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+  wa.style.cursor = 'pointer';
+  
+  wa.onmouseenter = () => {
+    wa.style.transform = 'translateY(-5px) scale(1.05)';
+    wa.style.backgroundColor = '#128c7e';
+    wa.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
+  };
+  wa.onmouseleave = () => {
+    wa.style.transform = 'none';
+    wa.style.backgroundColor = '#25d366';
+    wa.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
+  };
+  
+  document.body.appendChild(wa);
+});
+
+// ============================================================================
+// GLOBAL HEADER UI LOGIC (Hamburger Menu, Sticky Header, Search)
+// ============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  // ── Hamburger menu ──
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  if (hamburgerBtn && mobileDrawer) {
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('open');
+      mobileDrawer.classList.toggle('open');
+    });
+    // Close drawer on link click
+    mobileDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('open');
+        mobileDrawer.classList.remove('open');
+      });
+    });
+  }
+
+  // ── Scroll-shrink header ──
+  const header = document.getElementById('siteHeader');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 60);
+    });
+  }
+
+  // ── Global Search ──
+  const searchBtn = document.getElementById('searchBtn');
+  const searchInput = document.getElementById('searchInput');
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', function() {
+      const t = searchInput.value.trim();
+      if (t) window.location.href = `products.html?search=${encodeURIComponent(t)}`;
+    });
+    searchInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') searchBtn.click();
+    });
+  }
+});

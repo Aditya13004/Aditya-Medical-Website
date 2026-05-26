@@ -49,9 +49,9 @@ class JarvisAIChatbot {
       emergency: {
         patterns: ['emergency', 'urgent', 'serious', 'severe pain', 'cant breathe', 'chest pain', 'heart attack', 'stroke'],
         responses: [
-          "🚨 This sounds like a medical emergency! Please call emergency services immediately (102/108) or visit the nearest hospital. Don't delay seeking professional medical help!",
-          "⚠️ MEDICAL EMERGENCY: Please seek immediate medical attention! Call emergency services or go to the nearest hospital right away. This requires professional medical care.",
-          "🚨 Emergency situation detected! Please contact emergency services (102/108) immediately or visit the nearest emergency room. Your safety is the priority!"
+          " This sounds like a medical emergency! Please call emergency services immediately (102/108) or visit the nearest hospital. Don't delay seeking professional medical help!",
+          " MEDICAL EMERGENCY: Please seek immediate medical attention! Call emergency services or go to the nearest hospital right away. This requires professional medical care.",
+          " Emergency situation detected! Please contact emergency services (102/108) immediately or visit the nearest emergency room. Your safety is the priority!"
         ]
       },
       dosage_inquiry: {
@@ -85,7 +85,7 @@ class JarvisAIChatbot {
     };
     
     // Medical disclaimer
-    this.medicalDisclaimer = "⚠️ IMPORTANT: This is AI-based advice for informational purposes only. Please consult a licensed doctor or pharmacist before taking any medicine, especially for serious conditions. If symptoms persist or worsen, seek immediate medical attention.";
+    this.medicalDisclaimer = " IMPORTANT: This is AI-based advice for informational purposes only. Please consult a licensed doctor or pharmacist before taking any medicine, especially for serious conditions. If symptoms persist or worsen, seek immediate medical attention.";
     
     this.initializeChatbot();
   }
@@ -128,17 +128,24 @@ class JarvisAIChatbot {
   }
 
   // Create chatbot HTML structure
-  createChatbotHTML() {
+    createChatbotHTML() {
     const chatbotHTML = `
       <!-- Jarvis Chatbot -->
       <div id="jarvis-chatbot" class="jarvis-chatbot-container">
+        
+        <!-- WhatsApp Float Button -->
+        <a href="https://wa.me/917588662926" target="_blank" class="whatsapp-float-btn" title="Chat on WhatsApp">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.895c-.002 2.1.549 4.16 1.595 5.975L0 24l6.335-1.654c1.745.961 3.731 1.468 5.753 1.469h.005c6.581 0 11.943-5.336 11.945-11.898.001-3.176-1.229-6.166-3.498-8.418h-.02zM12.046 21.84h-.004c-1.782-.001-3.529-.478-5.06-1.38l-.363-.213-3.766.982.998-3.655-.234-.37A9.972 9.972 0 0 1 2.08 11.89C2.082 6.424 6.556 1.966 12.05 1.966c2.659.001 5.161 1.036 7.039 2.915 1.879 1.877 2.916 4.372 2.914 7.022-.003 5.467-4.478 9.928-9.957 9.937zM17.5 14.385c-.3-.15-1.774-.871-2.049-.971-.275-.1-.475-.15-.675.15-.2.3-.775.971-.95 1.171-.175.2-.35.225-.65.075-.3-.15-1.265-.464-2.411-1.485-.892-.794-1.496-1.774-1.671-2.074-.175-.3-.019-.462.131-.612.135-.135.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.613-.925-2.206-.241-.575-.487-.497-.675-.506-.175-.008-.375-.008-.575-.008s-.525.075-.8.375c-.275.3-1.05 1.018-1.05 2.482 0 1.464 1.075 2.88 1.225 3.08.15.2 2.113 3.197 5.1 4.475.71.305 1.264.488 1.696.624.712.224 1.36.192 1.868.116.57-.086 1.774-.72 2.024-1.415.25-.694.25-1.288.175-1.415-.075-.125-.275-.2-.575-.35z"/>
+          </svg>
+        </a>
+
         <!-- Chat Toggle Button -->
         <button id="jarvis-toggle" class="jarvis-toggle-btn" title="Chat with MedAssist AI">
-          <div class="jarvis-avatar">
-            <span class="jarvis-icon">🤖</span>
-            <div class="jarvis-pulse-ring"></div>
-          </div>
-          <span class="jarvis-label">MedAssist AI</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            <path d="M5 3v4M3 5h4"/>
+          </svg>
         </button>
 
         <!-- Chat Window -->
@@ -146,18 +153,22 @@ class JarvisAIChatbot {
           <!-- Header -->
           <div class="jarvis-header">
             <div class="jarvis-header-info">
-              <div class="jarvis-avatar-small">🤖</div>
+              <div class="jarvis-avatar-small">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                </svg>
+              </div>
               <div class="jarvis-info">
-                <h4>MedAssist AI Assistant</h4>
-                <p class="jarvis-status">Online • Medical AI</p>
+                <h4>MedAssist AI</h4>
+                <p class="jarvis-status"><span class="status-dot"></span> Online</p>
               </div>
             </div>
             <div class="jarvis-header-controls">
-              <button id="jarvis-voice-toggle" class="jarvis-voice-btn" title="Toggle voice assistant">
-                <span id="jarvis-voice-icon">🔊</span>
+              <button id="jarvis-voice-toggle" class="jarvis-icon-btn" title="Toggle voice assistant">
+                <svg id="jarvis-voice-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
               </button>
-              <button id="jarvis-minimize" class="jarvis-minimize-btn" title="Minimize chat">
-                <span>—</span>
+              <button id="jarvis-minimize" class="jarvis-icon-btn" title="Minimize chat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
             </div>
           </div>
@@ -174,341 +185,336 @@ class JarvisAIChatbot {
               <span></span>
               <span></span>
             </div>
-            <span class="jarvis-typing-text">MedAssist AI is analyzing...</span>
           </div>
 
           <!-- Input Area -->
           <div class="jarvis-input-area">
-            <div class="jarvis-input-container">
-              <input type="text" id="jarvis-input" placeholder="Type your symptoms or ask about medicines..." autocomplete="off">
-              <button id="jarvis-voice-input" class="jarvis-voice-input-btn" title="Voice input">
-                <span id="jarvis-voice-input-icon">🎤</span>
-              </button>
-              <button id="jarvis-send" class="jarvis-send-btn" title="Send message">
-                <span>▶</span>
-              </button>
-            </div>
             <div class="jarvis-quick-actions">
               <button class="jarvis-quick-btn" data-action="common-cold">Common Cold</button>
               <button class="jarvis-quick-btn" data-action="fever">Fever</button>
               <button class="jarvis-quick-btn" data-action="headache">Headache</button>
-              <button class="jarvis-quick-btn" data-action="stomach-pain">Stomach Pain</button>
+            </div>
+            <div class="jarvis-input-wrapper">
+              <input type="text" id="jarvis-input" placeholder="Type your symptoms..." autocomplete="off">
+              <div class="jarvis-input-controls">
+                <button id="jarvis-voice-input" class="jarvis-input-btn" title="Voice input">
+                  <svg id="jarvis-voice-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                </button>
+                <button id="jarvis-send" class="jarvis-send-btn" title="Send message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     `;
 
-    // Add chatbot HTML to body
     document.body.insertAdjacentHTML('beforeend', chatbotHTML);
-
-    // Add CSS styles
     this.addChatbotStyles();
   }
 
-  // Add chatbot styles
-  addChatbotStyles() {
+
+    addChatbotStyles() {
     const styles = `
       <style id="jarvis-chatbot-styles">
-        .jarvis-chatbot-container {
+        /* Global CSS for WhatsApp button */
+        .whatsapp-float-btn {
           position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 10000;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .jarvis-toggle-btn {
-          position: relative;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-          border-radius: 50px;
-          padding: 12px 20px;
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          transition: all 0.3s ease;
-          overflow: hidden;
-        }
-
-        .jarvis-toggle-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .jarvis-avatar {
-          position: relative;
+          bottom: 24px;
+          right: 24px;
+          width: 56px;
+          height: 56px;
+          background: #25D366;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          box-shadow: 0 10px 30px rgba(37, 211, 102, 0.25);
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          z-index: 9999;
+          text-decoration: none;
+        }
+        .whatsapp-float-btn:hover {
+          transform: scale(1.08) translateY(-3px);
+          box-shadow: 0 12px 35px rgba(37, 211, 102, 0.35);
         }
 
-        .jarvis-icon {
-          font-size: 24px;
-          z-index: 2;
+        /* Container */
+        .jarvis-chatbot-container {
+          position: fixed;
+          bottom: 95px;
+          right: 24px;
+          z-index: 9999;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Toggle Button */
+        .jarvis-toggle-btn {
           position: relative;
-        }
-
-        .jarvis-pulse-ring {
-          position: absolute;
-          border: 2px solid rgba(255, 255, 255, 0.3);
+          background: rgba(37, 99, 235, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 50%;
-          width: 35px;
-          height: 35px;
-          animation: jarvis-pulse 2s ease-out infinite;
+          width: 52px;
+          height: 52px;
+          padding: 0;
+          color: white;
+          cursor: pointer;
+          box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes jarvis-pulse {
-          0% {
-            transform: scale(0.8);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1.4);
-            opacity: 0;
-          }
+        .jarvis-toggle-btn:hover {
+          transform: translateY(-4px) scale(1.05);
+          box-shadow: 0 15px 35px rgba(37, 99, 235, 0.35);
+          background: rgba(29, 78, 216, 0.95);
         }
 
-        .jarvis-label {
-          font-size: 14px;
-          white-space: nowrap;
-        }
-
+        /* Chat Window */
         .jarvis-chat-window {
           position: absolute;
-          bottom: 80px;
+          bottom: 70px;
           right: 0;
-          width: 380px;
-          height: 500px;
-          background: white;
-          border-radius: 20px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+          width: 360px;
+          height: 560px;
+          background: #ffffff;
+          border-radius: 28px;
+          box-shadow: 0 25px 60px rgba(15, 23, 42, 0.18);
+          border: 1px solid rgba(226, 232, 240, 0.8);
           display: none;
           flex-direction: column;
           overflow: hidden;
-          border: 1px solid #e5e5e5;
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+          transform-origin: bottom right;
+          transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .jarvis-chat-window.active {
+          opacity: 1;
+          transform: translateY(0) scale(1);
         }
 
         .jarvis-header {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          padding: 15px 20px;
+          background: linear-gradient(135deg, #2563eb, #1e40af);
+          padding: 20px 24px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           color: white;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .jarvis-header-info {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 14px;
         }
 
         .jarvis-avatar-small {
-          font-size: 20px;
           background: rgba(255, 255, 255, 0.2);
-          border-radius: 50%;
-          width: 35px;
-          height: 35px;
+          border-radius: 12px;
+          width: 38px;
+          height: 38px;
           display: flex;
           align-items: center;
           justify-content: center;
+          backdrop-filter: blur(4px);
         }
 
         .jarvis-info h4 {
           margin: 0;
           font-size: 16px;
           font-weight: 600;
+          letter-spacing: -0.3px;
         }
 
         .jarvis-status {
-          margin: 0;
+          margin: 4px 0 0 0;
           font-size: 12px;
           opacity: 0.9;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 500;
+        }
+
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          background-color: #22c55e;
+          border-radius: 50%;
+          box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
         }
 
         .jarvis-header-controls {
           display: flex;
-          gap: 8px;
+          gap: 6px;
         }
 
-        .jarvis-voice-btn,
-        .jarvis-minimize-btn {
-          background: rgba(255, 255, 255, 0.2);
+        .jarvis-icon-btn {
+          background: transparent;
           border: none;
-          border-radius: 50%;
-          width: 32px;
-          height: 32px;
+          border-radius: 10px;
+          width: 36px;
+          height: 36px;
           color: white;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.3s ease;
+          transition: all 0.2s ease;
+          opacity: 0.8;
         }
 
-        .jarvis-voice-btn:hover,
-        .jarvis-minimize-btn:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: scale(1.1);
-        }
-
-        .jarvis-voice-btn.active {
-          background: #4CAF50;
-          animation: jarvis-pulse-voice 1s ease-in-out infinite;
-        }
-
-        @keyframes jarvis-pulse-voice {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
+        .jarvis-icon-btn:hover {
+          background: rgba(255, 255, 255, 0.15);
+          opacity: 1;
         }
 
         .jarvis-messages {
           flex: 1;
-          padding: 20px;
+          padding: 24px;
           overflow-y: auto;
-          background: #f8f9fa;
+          background: #ffffff;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
         }
 
         .jarvis-message {
-          margin-bottom: 15px;
-          animation: jarvis-message-in 0.3s ease-out;
+          animation: jarvis-fade-in 0.3s ease-out forwards;
+          opacity: 0;
+          transform: translateY(10px);
+          display: flex;
+          flex-direction: column;
         }
 
-        @keyframes jarvis-message-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes jarvis-fade-in {
+          to { opacity: 1; transform: translateY(0); }
         }
 
-        .jarvis-message.user {
-          text-align: right;
-        }
-
-        .jarvis-message.jarvis {
-          text-align: left;
-        }
+        .jarvis-message.user { align-items: flex-end; }
+        .jarvis-message.jarvis { align-items: flex-start; }
 
         .jarvis-message-content {
           display: inline-block;
-          max-width: 80%;
-          padding: 12px 16px;
+          max-width: 85%;
+          padding: 14px 18px;
           border-radius: 18px;
           font-size: 14px;
-          line-height: 1.4;
+          line-height: 1.5;
+          font-weight: 500;
         }
 
         .jarvis-message.user .jarvis-message-content {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #2563eb, #3b82f6);
           color: white;
+          border-bottom-right-radius: 4px;
+          box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
         }
 
         .jarvis-message.jarvis .jarvis-message-content {
-          background: white;
-          color: #333;
-          border: 1px solid #e5e5e5;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          background: #f8fafc;
+          color: #0f172a;
+          border: 1px solid #e2e8f0;
+          border-bottom-left-radius: 4px;
         }
 
+        /* Medicine Cards styled as premium SaaS cards */
         .jarvis-medicine-card {
-          background: #f8f9ff;
-          border: 1px solid #e1e5ff;
-          border-radius: 12px;
-          padding: 15px;
-          margin: 10px 0;
-          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 16px;
+          margin-top: 12px;
+          box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+          width: 100%;
+          transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .jarvis-medicine-card:hover {
+          border-color: #cbd5e1;
+          transform: translateY(-2px);
         }
 
         .jarvis-medicine-name {
           font-weight: 600;
-          color: #667eea;
-          font-size: 16px;
+          color: #1e40af;
+          font-size: 15px;
           margin-bottom: 8px;
         }
 
-        .jarvis-medicine-details {
-          font-size: 13px;
-          color: #666;
-          line-height: 1.5;
-        }
-
-        .jarvis-medicine-price {
-          font-weight: 600;
-          color: #22c55e;
-          margin-top: 8px;
-        }
+        .jarvis-medicine-details { font-size: 13px; color: #475569; line-height: 1.6; }
+        .jarvis-medicine-price { font-weight: 600; color: #059669; margin-top: 10px; font-size: 15px; }
 
         .jarvis-add-to-cart {
-          background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 8px;
-          font-size: 12px;
+          background: #f1f5f9;
+          color: #0f172a;
+          border: 1px solid #e2e8f0;
+          padding: 10px 16px;
+          border-radius: 10px;
+          font-size: 13px;
           font-weight: 600;
           cursor: pointer;
-          margin-top: 10px;
-          transition: all 0.3s ease;
+          margin-top: 12px;
+          transition: all 0.2s ease;
+          width: 100%;
+          display: block;
         }
 
         .jarvis-add-to-cart:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+          background: #2563eb;
+          color: white;
+          border-color: #2563eb;
         }
 
         .jarvis-out-of-stock-badge {
-          background: #fee2e2;
-          border: 1px solid #fca5a5;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
           color: #dc2626;
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 8px;
-          font-size: 11px;
-          font-weight: 700;
-          margin-top: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          box-shadow: 0 2px 6px rgba(220, 38, 38, 0.08);
+          padding: 8px 12px;
+          border-radius: 10px;
+          font-size: 12px;
+          font-weight: 600;
+          margin-top: 12px;
+          text-align: center;
         }
 
         .jarvis-disclaimer {
-          background: #fef3c7;
-          border: 1px solid #f59e0b;
-          color: #d97706;
-          padding: 10px;
-          border-radius: 8px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          color: #64748b;
+          padding: 12px 16px;
+          border-radius: 12px;
           font-size: 12px;
-          margin-top: 10px;
-          line-height: 1.4;
+          margin-top: 16px;
+          line-height: 1.5;
         }
 
         .jarvis-typing-indicator {
-          padding: 15px 20px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          background: white;
+          padding: 0 24px 10px 24px;
         }
 
-        .jarvis-typing-dots {
-          display: flex;
-          gap: 4px;
+        .jarvis-typing-dots { 
+          display: inline-flex; 
+          gap: 4px; 
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          padding: 12px 16px;
+          border-radius: 16px;
+          border-bottom-left-radius: 4px;
         }
-
+        
         .jarvis-typing-dots span {
-          width: 8px;
-          height: 8px;
+          width: 6px; height: 6px;
           border-radius: 50%;
-          background: #667eea;
+          background: #94a3b8;
           animation: jarvis-typing-bounce 1.4s ease-in-out infinite both;
         }
 
@@ -516,172 +522,172 @@ class JarvisAIChatbot {
         .jarvis-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
 
         @keyframes jarvis-typing-bounce {
-          0%, 80%, 100% {
-            transform: scale(0);
-          } 
-          40% {
-            transform: scale(1);
-          }
-        }
-
-        .jarvis-typing-text {
-          font-size: 12px;
-          color: #666;
-          font-style: italic;
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; } 
+          40% { transform: scale(1); opacity: 1; }
         }
 
         .jarvis-input-area {
-          background: white;
-          padding: 15px;
-          border-top: 1px solid #e5e5e5;
-        }
-
-        .jarvis-input-container {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 10px;
-        }
-
-        #jarvis-input {
-          flex: 1;
-          border: 2px solid #e5e5e5;
-          border-radius: 25px;
-          padding: 12px 16px;
-          font-size: 14px;
-          outline: none;
-          transition: all 0.3s ease;
-        }
-
-        #jarvis-input:focus {
-          border-color: #667eea;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .jarvis-voice-input-btn,
-        .jarvis-send-btn {
-          background: #667eea;
-          border: none;
-          border-radius: 50%;
-          width: 45px;
-          height: 45px;
-          color: white;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.3s ease;
-        }
-
-        .jarvis-voice-input-btn:hover,
-        .jarvis-send-btn:hover {
-          background: #5a6fd8;
-          transform: scale(1.1);
-        }
-
-        .jarvis-voice-input-btn.listening {
-          background: #ef4444;
-          animation: jarvis-pulse-recording 1s ease-in-out infinite;
-        }
-
-        @keyframes jarvis-pulse-recording {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
+          background: #ffffff;
+          padding: 16px 20px 20px 20px;
+          border-top: 1px solid #f1f5f9;
         }
 
         .jarvis-quick-actions {
           display: flex;
           gap: 8px;
-          flex-wrap: wrap;
+          margin-bottom: 12px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          scrollbar-width: none;
         }
+        
+        .jarvis-quick-actions::-webkit-scrollbar { display: none; }
 
         .jarvis-quick-btn {
-          background: #f3f4f6;
-          border: 1px solid #d1d5db;
-          border-radius: 20px;
-          padding: 6px 12px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 8px 14px;
           font-size: 12px;
-          color: #6b7280;
+          font-weight: 500;
+          color: #475569;
           cursor: pointer;
-          transition: all 0.3s ease;
+          white-space: nowrap;
+          transition: all 0.2s ease;
         }
 
         .jarvis-quick-btn:hover {
-          background: #667eea;
-          color: white;
-          border-color: #667eea;
+          background: #f1f5f9;
+          color: #0f172a;
+          border-color: #cbd5e1;
+        }
+
+        .jarvis-input-wrapper {
+          display: flex;
+          align-items: center;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 18px;
+          padding: 6px 6px 6px 16px;
+          transition: all 0.3s ease;
+          height: 54px;
+        }
+        
+        .jarvis-input-wrapper:focus-within {
+          border-color: #3b82f6;
+          background: #ffffff;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        #jarvis-input {
+          flex: 1;
+          border: none;
+          background: transparent;
+          font-size: 14px;
+          outline: none;
+          color: #0f172a;
+          padding-right: 10px;
+          font-family: inherit;
+        }
+        
+        #jarvis-input::placeholder {
+          color: #94a3b8;
+        }
+
+        .jarvis-input-controls {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .jarvis-input-btn {
+          background: transparent;
+          border: none;
+          width: 36px;
+          height: 36px;
+          border-radius: 12px;
+          color: #64748b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .jarvis-input-btn:hover {
+          background: #f1f5f9;
+          color: #2563eb;
+        }
+        
+        .jarvis-input-btn.listening {
+          color: #ef4444;
+          background: #fef2f2;
+          animation: jarvis-pulse-mic 1.5s infinite;
+        }
+        
+        @keyframes jarvis-pulse-mic {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+
+        .jarvis-send-btn {
+          background: #2563eb;
+          border: none;
+          border-radius: 14px;
+          width: 42px;
+          height: 42px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .jarvis-send-btn:hover {
+          background: #1d4ed8;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
         }
 
         .jarvis-emergency-alert {
-          background: #fee2e2;
-          border: 2px solid #fca5a5;
-          color: #dc2626;
-          padding: 15px;
-          border-radius: 12px;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          color: #b91c1c;
+          padding: 16px;
+          border-radius: 16px;
           margin: 10px 0;
-          font-weight: 600;
-          animation: jarvis-emergency-pulse 1s ease-in-out infinite;
-        }
-
-        @keyframes jarvis-emergency-pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.02); }
+          font-weight: 500;
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
           .jarvis-chatbot-container {
             right: 16px;
-            bottom: 76px; /* floats neatly above the sticky bottom bar */
-            left: auto;
-            transform: none;
+            bottom: 85px;
           }
 
-          .jarvis-toggle-btn {
-            padding: 0;
+          .whatsapp-float-btn {
+            bottom: 16px;
+            right: 16px;
             width: 52px;
             height: 52px;
-            border-radius: 50%;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-          }
-
-          .jarvis-label {
-            display: none; /* hide text label to keep the button compact and circular */
-          }
-
-          .jarvis-pulse-ring {
-            width: 48px;
-            height: 48px;
           }
 
           .jarvis-chat-window {
             width: calc(100vw - 32px);
             max-width: 360px;
-            height: 60vh;
-            right: 0;
-            left: auto;
-            bottom: 64px;
+            height: 65vh;
+            bottom: 60px;
           }
-
-          .jarvis-quick-actions {
-            justify-content: center;
-          }
-        }
-
-        /* Accessibility */
-        .jarvis-chatbot-container * {
-          transition: all 0.3s ease;
-        }
-
-        .jarvis-chatbot-container button:focus {
-          outline: 2px solid #667eea;
-          outline-offset: 2px;
         }
       </style>
     `;
 
     document.head.insertAdjacentHTML('beforeend', styles);
   }
+
 
   // Bind event listeners
   bindEventListeners() {
@@ -696,7 +702,15 @@ class JarvisAIChatbot {
     // Toggle chat window
     toggleBtn.addEventListener('click', () => {
       const isVisible = chatWindow.style.display === 'flex';
-      chatWindow.style.display = isVisible ? 'none' : 'flex';
+      
+      if (isVisible) {
+        chatWindow.classList.remove('active');
+        setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
+      } else {
+        chatWindow.style.display = 'flex';
+        void chatWindow.offsetWidth; // Trigger reflow
+        chatWindow.classList.add('active');
+      }
       
       if (!isVisible) {
         input.focus();
@@ -705,7 +719,8 @@ class JarvisAIChatbot {
 
     // Minimize chat
     minimizeBtn.addEventListener('click', () => {
-      chatWindow.style.display = 'none';
+      chatWindow.classList.remove('active');
+      setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
     });
 
     // Send message
@@ -824,7 +839,7 @@ class JarvisAIChatbot {
     
     // Default response with suggestions
     return {
-      text: "I understand you're looking for medical assistance. Could you please describe your symptoms in more detail? For example:\n\n• What type of pain or discomfort?\n• Where is it located?\n• How long have you been experiencing it?\n• Any other symptoms?\n\nThe more details you provide, the better I can help you find the right medicines.",
+      text: `I understand you're looking for medical assistance. Could you please describe your symptoms in more detail? For example:\n\n• What type of pain or discomfort?\n• Where is it located?\n• How long have you been experiencing it?\n• Any other symptoms?\n\nThe more details you provide, the better I can help you find the right medicines.`,
       data: { type: 'clarification' }
     };
   }
@@ -842,7 +857,7 @@ class JarvisAIChatbot {
 
   // Get emergency response
   getEmergencyResponse() {
-    return "🚨 MEDICAL EMERGENCY DETECTED!\n\nPlease take immediate action:\n• Call emergency services: 102 or 108\n• Go to the nearest hospital\n• Don't delay seeking professional help\n\nFor immediate assistance:\n📞 Emergency: 102/108\n🏥 Nearest Hospital: [Location]\n📱 Aditya Medical: +91-7588662926\n\nYour safety is the absolute priority!";
+    return ` MEDICAL EMERGENCY DETECTED!\n\nPlease take immediate action:\n• Call emergency services: 102 or 108\n• Go to the nearest hospital\n• Don't delay seeking professional help\n\nFor immediate assistance:\n Emergency: 102/108\n Nearest Hospital: [Location]\n Aditya Medical: +91-7588662926\n\nYour safety is the absolute priority!`;
   }
 
   // Get pattern-based response
@@ -863,7 +878,11 @@ class JarvisAIChatbot {
     const topResult = results[0];
     const disease = topResult.disease;
     
-    let response = `Based on your symptoms, you might be experiencing **${disease.name}** (${topResult.confidence}% match).\n\nHere are my recommended medicines:\n\n`;
+    let response = `Based on your symptoms, you might be experiencing **${disease.name}** (${topResult.confidence}% match).
+
+Here are my recommended medicines:
+
+`;
     
     const medicineData = [];
     
@@ -894,12 +913,16 @@ class JarvisAIChatbot {
   generateSpecificMedicineResponse(medicineInfo) {
     const medicine = medicineInfo;
     
-    let response = `Here's information about **${medicine.name}** (${medicine.brand}):\n\n`;
+    let response = `Here's information about **${medicine.name}** (${medicine.brand}):
+
+`;
     response += `• **Type:** ${medicine.type}\n`;
     response += `• **Dosage:** ${medicine.dosage}\n`;
     response += `• **Price:** ₹${medicine.price}\n`;
     response += `• **Side Effects:** ${medicine.sideEffects}\n`;
-    response += `• **Used for:** ${medicine.diseaseContext}\n\n`;
+    response += `• **Used for:** ${medicine.diseaseContext}
+
+`;
     response += this.medicalDisclaimer;
     
     return {
@@ -963,11 +986,11 @@ class JarvisAIChatbot {
           <div class="jarvis-medicine-price">₹${medicine.price}</div>
           ${isAvailable ? `
             <button class="jarvis-add-to-cart" data-medicine="${medicine.name}" data-price="${medicine.price}">
-              🛒 Add to Cart
+               Add to Cart
             </button>
           ` : `
             <div class="jarvis-out-of-stock-badge">
-              ❌ Out of Stock
+               Out of Stock
             </div>
           `}
         </div>
@@ -1017,7 +1040,7 @@ class JarvisAIChatbot {
       try {
         this.speechRecognition.start();
         this.isListening = true;
-        this.addMessage("🎤 Listening... Please speak your symptoms or questions.", 'jarvis');
+        this.addMessage("Listening... Please speak your symptoms or questions.", 'jarvis');
       } catch (error) {
         console.error('Speech recognition error:', error);
         this.addMessage("Sorry, I couldn't start voice recognition. Please try again.", 'jarvis');
@@ -1043,10 +1066,10 @@ class JarvisAIChatbot {
     
     if (this.isListening) {
       btn.classList.add('listening');
-      icon.textContent = '⏹️';
+      icon.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>';
     } else {
       btn.classList.remove('listening');
-      icon.textContent = '🎤';
+      icon.innerHTML = '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line>';
     }
   }
 
@@ -1057,10 +1080,10 @@ class JarvisAIChatbot {
     
     if (this.isVoiceEnabled) {
       btn.classList.add('active');
-      icon.textContent = '🔊';
+      icon.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>';
     } else {
       btn.classList.remove('active');
-      icon.textContent = '🔇';
+      icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
     }
   }
 
@@ -1075,7 +1098,7 @@ class JarvisAIChatbot {
       .replace(/\*\*(.*?)\*\*/g, '$1')
       .replace(/\*(.*?)\*/g, '$1')
       .replace(/<[^>]*>/g, '')
-      .replace(/[🚨⚠️📞🏥📱💊🛒🎤⏹️🔊🔇]/g, '')
+      .replace(/[💊🎤⏹️🔊🔇]/g, '')
       .replace(/₹/g, 'rupees');
     
     this.currentUtterance = new SpeechSynthesisUtterance(cleanText);
@@ -1126,10 +1149,10 @@ class JarvisAIChatbot {
     // Try to use existing cart system
     if (typeof window.addToCart === 'function') {
       window.addToCart(medicineName, price);
-      this.addMessage(`✅ ${medicineName} has been added to your cart for ₹${price}!`, 'jarvis');
+      this.addMessage(` ${medicineName} has been added to your cart for ₹${price}!`, 'jarvis');
     } else {
       // Fallback for demo
-      this.addMessage(`✅ ${medicineName} added to cart for ₹${price}! Please proceed to checkout when ready.`, 'jarvis');
+      this.addMessage(` ${medicineName} added to cart for ₹${price}! Please proceed to checkout when ready.`, 'jarvis');
       
       // Update cart count if element exists
       const cartCount = document.getElementById('cartCount');
