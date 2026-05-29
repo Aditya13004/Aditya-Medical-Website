@@ -17,14 +17,14 @@
   <link rel="icon" type="image/x-icon" href="images/Aditya Medical.png" />
   <style>
     .ai-recommendation-section {
-      padding: 3rem 0 6rem 0;
-      min-height: 100vh;
+      padding: 2rem 0 3rem 0;
+      min-height: calc(100vh - 100px);
       background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 50%, #f4f7ff 100%);
     }
 
     .ai-container {
-      width: 95%;
-      max-width: 1400px;
+      width: 96%;
+      max-width: 1500px;
       margin: 0 auto;
     }
 
@@ -36,26 +36,26 @@
       border-radius: 32px;
       border: 1px solid rgba(255,255,255,0.9);
       box-shadow: 0 20px 40px rgba(15, 76, 129, 0.05);
-      padding: 4rem 3rem;
+      padding: 2.5rem 3rem;
       display: flex;
-      gap: 4rem;
+      gap: 3rem;
       align-items: center;
-      margin-bottom: 4rem;
+      margin-bottom: 2.5rem;
       position: relative;
       overflow: hidden;
     }
 
     .ai-header-text {
-      flex: 1;
+      flex: 1.2;
       min-width: 0;
       z-index: 2;
     }
 
     .ai-header-text h1 {
-      font-size: 3.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       background: linear-gradient(135deg, #0F172A 0%, #3B82F6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -63,36 +63,37 @@
     }
 
     .ai-header-text p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #475569;
       line-height: 1.6;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .trust-badges {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
       flex-wrap: wrap;
     }
 
     .trust-badge {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       background: #fff;
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border-radius: 50px;
       border: 1px solid rgba(226, 232, 240, 0.8);
       box-shadow: 0 4px 12px rgba(15, 76, 129, 0.04);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: #1E293B;
     }
 
     .ai-header-img-wrap {
-      flex: 1;
-      min-width: 300px;
-      height: 380px;
+      flex: 0.8;
+      min-width: 250px;
+      max-width: 400px;
+      height: 260px;
       position: relative;
       z-index: 2;
       display: flex;
@@ -112,27 +113,27 @@
 
     /* How It Works Steps */
     .steps-section {
-      margin-bottom: 5rem;
+      margin-bottom: 2.5rem;
     }
     
     .steps-section h2 {
-      font-size: 2rem;
+      font-size: 1.6rem;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 1.5rem;
       color: #0F172A;
     }
 
     .steps-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
     }
 
     .step-card {
       background: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(16px);
-      padding: 2.5rem 2rem;
-      border-radius: 24px;
+      padding: 1.5rem;
+      border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 1);
       box-shadow: 0 10px 30px rgba(15, 76, 129, 0.04);
       text-align: center;
@@ -144,21 +145,26 @@
     }
 
     .step-icon {
-      width: 64px;
-      height: 64px;
+      width: 48px;
+      height: 48px;
       background: #EFF6FF;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1rem auto;
       color: #2563EB;
+    }
+    
+    .step-icon svg {
+      width: 24px;
+      height: 24px;
     }
 
     .step-card h3 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #1E293B;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.6rem;
     }
 
     .step-card p {
@@ -248,8 +254,8 @@
     /* Pill Selection UI (replaces checkboxes) */
     .checkbox-group {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
       margin-top: 1rem;
     }
 
@@ -482,10 +488,13 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     @media (max-width: 1024px) {
-      .ai-header { flex-direction: column; padding: 3rem 2rem; }
-      .ai-header-img-wrap { width: 100%; height: auto; }
-      .assessment-layout { grid-template-columns: 1fr; }
+      .ai-header { flex-direction: column; padding: 2rem 1.5rem; gap: 2rem; margin-bottom: 2rem; }
+      .ai-header-text h1 { font-size: 2.2rem; }
+      .ai-header-img-wrap { width: 100%; height: 220px; max-width: none; }
+      .assessment-layout { grid-template-columns: 1fr; gap: 2rem; }
       .info-panel { display: none; }
+      .checkbox-group { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+      .ai-recommendation-section { padding: 1.5rem 0 2rem 0; }
     }
   </style>
 </head>
@@ -1252,18 +1261,17 @@ document.getElementById('symptomAssessmentForm').addEventListener('submit', asyn
     document.getElementById('symptomAssessmentForm').addEventListener('submit', function(e) {
       if (!validateForm()) {
         e.preventDefault();
-    const container = document.getElementById('recommendationsContainer');
-    if (container) container.scrollIntoView({ behavior: 'smooth' });
-  }
-});
+        return false;
+      }
+    });
 
 // Add global disclaimer under header
 (function addDisclaimer(){
-  const header = document.querySelector('.ai-header');
+  const header = document.querySelector('.ai-header-text');
   if (header && !document.getElementById('ai-disclaimer')) {
     const d = document.createElement('div');
     d.id = 'ai-disclaimer';
-    d.style.cssText = 'margin-top:12px;color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;padding:8px;border-radius:6px;font-weight:600;';
+    d.style.cssText = 'margin-top:1.5rem;color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;padding:10px 14px;border-radius:8px;font-weight:600;display:inline-block;font-size:0.95rem;';
     d.textContent = 'This is AI-generated advice. Please consult a doctor before using any medicine.';
     header.appendChild(d);
   }

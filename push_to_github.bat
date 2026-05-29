@@ -9,7 +9,7 @@ git add .
 echo.
 
 echo 2. Saving changes (committing)...
-git commit -m "Fix mobile search responsiveness, welcome popup, and footer alignment"
+git commit -m "Fix AI Help page layout and responsiveness"
 echo.
 
 echo 3. Pushing updates to GitHub (main branch)...
